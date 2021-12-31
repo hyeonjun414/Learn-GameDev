@@ -30,6 +30,6 @@ int main()
 		cout << x << "는 0이거나 10이다." << endl;
 
 	}
+
 	return 0;
 }
-
