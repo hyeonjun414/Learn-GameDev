@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string>
-#include <vector>
 
 using namespace std;
 
-// 계산식 입력 및 숫자 분할
+// 계산식 입력 및 숫자 분할 함수
+// 공백 처리나 큰 숫자에 따른 오버플로 처리도 같이한다.
 void GetNumAndOperator(float& n1, float& n2, char& op)
 {
 	string str;
@@ -30,12 +30,25 @@ void GetNumAndOperator(float& n1, float& n2, char& op)
 		}
 	}
 	// 구분자를 통해 숫자1, 숫자2, 연산자를 구한다.
-	n1 = stof(str.substr(0, i));
-	n2 = stof(str.substr(i + 1));
+	string str_n1 = str.substr(0, i);
+	string str_n2 = str.substr(i + 1);
+
+	// 너무 긴 숫자를 입력시 자료형의 최대값을 넘을 수 있으므로 이를 방지한다.
+	// float의 최대 표현 범위 3.4^38승 -> 38자가 넘으면 방지.
+	if (str_n1.length() >= 38 || str_n2.length() >= 38)
+	{
+		cout << "너무 긴 숫자를 입력하셨습니다. 계산기를 종료합니다." << endl;
+		exit(0);
+	}
+	// 실수형으로 형변환한다.
+	n1 = stof(str_n1);
+	n2 = stof(str_n2);
 	op = str[i];
+	
+
 
 }
-
+// 사칙연산 함수들
 float Sum(float a, float b) {
 	return a + b;
 }
@@ -46,6 +59,7 @@ float Mul(float a, float b) {
 	return a * b;
 }
 float Div(float a, float b) {
+	// 0으로 나누는 경우를 방지한다.
 	if (b == 0)
 	{
 		cout << "0으로는 나눌 수 없습니다. -1을 반환합니다." << endl;
@@ -54,11 +68,11 @@ float Div(float a, float b) {
 	return a / b;
 }
 
-// 앞서 구한 숫자와 연산자를 통해 계산을 수행한다.
+// 두 숫자에 대한 계산을 수행하는 함수
 float Calculate(float& n1, float& n2, char& op)
 {
 	// 연산자에 따라 두 숫자사이의 연산을 결정하여
-	// 함수를 호출한다.
+	// 알맞는 함수를 호출한다.
 	switch (op)
 	{
 	case '+': 
@@ -88,11 +102,6 @@ int main()
 	{
 		GetNumAndOperator(n1, n2, op);
 		float result = Calculate(n1, n2, op);
-		if (result > numeric_limits<float>::max())
-		{
-			result = -1;
-			cout << "최대 값을 넘어섰습니다. -1을 반환합니다." << endl;
-		}
 		cout << "계산 결과는 " << result << " 입니다." << endl;
 	}
 	return 0;
