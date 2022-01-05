@@ -1,27 +1,26 @@
-#include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
-
+#include <iostream>
 using namespace std;
-
-void PrintVector(vector<int> vec)
-{
-    for (int i = 0; i < vec.size(); i++)
-    {
-        cout << vec[i] << " ";
-    }
-    cout << endl;
-}
 
 int main()
 {
-    int a, b;
-    a = 472;
-    b = 385;
-
-    cout << a * (b % 10) << endl;
-    cout << a * ((b / 10)%10) << endl;
-    cout << a * (b / 100) << endl;
-    cout << a * b << endl;
+    int* arr = new int[10];
+    for (int i = 0; i < 10; i++)
+    {
+        arr[i] = 0;
+    }
+    int a, b, c;
+    cin >> a >> b >> c;
+    int result = a * b * c;
+    while (result != 0)
+    {
+        arr[result%10]++;
+        result /= 10;
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        cout << arr[i] << endl;
+    }
 }
