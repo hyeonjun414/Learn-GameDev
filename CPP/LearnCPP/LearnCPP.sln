@@ -25,6 +25,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5-2.포인터", "5-2.포인
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5-3.과제(달팽이 수열과 역 달팽이 수열)", "5-3.과제(달팽이 수열과 역 달팽이 수열)\5-3.과제(달팽이 수열과 역 달팽이 수열).vcxproj", "{36A1075D-FC6E-4DC1-BA2B-D7B862A6C9D8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "6-1.구조체", "6-1.구조체\6-1.구조체.vcxproj", "{8459D674-9FD1-419D-A9CC-EBDCD2005E59}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "6-2.(과제)주제있는 구조체", "6-2.(과제)주제있는 구조체\6-2.(과제)주제있는 구조체.vcxproj", "{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -121,6 +125,22 @@ Global
 		{36A1075D-FC6E-4DC1-BA2B-D7B862A6C9D8}.Release|x64.Build.0 = Release|x64
 		{36A1075D-FC6E-4DC1-BA2B-D7B862A6C9D8}.Release|x86.ActiveCfg = Release|Win32
 		{36A1075D-FC6E-4DC1-BA2B-D7B862A6C9D8}.Release|x86.Build.0 = Release|Win32
+		{8459D674-9FD1-419D-A9CC-EBDCD2005E59}.Debug|x64.ActiveCfg = Debug|x64
+		{8459D674-9FD1-419D-A9CC-EBDCD2005E59}.Debug|x64.Build.0 = Debug|x64
+		{8459D674-9FD1-419D-A9CC-EBDCD2005E59}.Debug|x86.ActiveCfg = Debug|Win32
+		{8459D674-9FD1-419D-A9CC-EBDCD2005E59}.Debug|x86.Build.0 = Debug|Win32
+		{8459D674-9FD1-419D-A9CC-EBDCD2005E59}.Release|x64.ActiveCfg = Release|x64
+		{8459D674-9FD1-419D-A9CC-EBDCD2005E59}.Release|x64.Build.0 = Release|x64
+		{8459D674-9FD1-419D-A9CC-EBDCD2005E59}.Release|x86.ActiveCfg = Release|Win32
+		{8459D674-9FD1-419D-A9CC-EBDCD2005E59}.Release|x86.Build.0 = Release|Win32
+		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Debug|x64.ActiveCfg = Debug|x64
+		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Debug|x64.Build.0 = Debug|x64
+		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Debug|x86.ActiveCfg = Debug|Win32
+		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Debug|x86.Build.0 = Debug|Win32
+		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Release|x64.ActiveCfg = Release|x64
+		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Release|x64.Build.0 = Release|x64
+		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Release|x86.ActiveCfg = Release|Win32
+		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
