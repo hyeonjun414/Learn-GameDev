@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "6-1.구조체", "6-1.구조
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "6-2.(과제)주제있는 구조체", "6-2.(과제)주제있는 구조체\6-2.(과제)주제있는 구조체.vcxproj", "{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7-1.구조체2", "7-1.구조체2\7-1.구조체2.vcxproj", "{63B4FD3D-1589-43C1-B9C5-380CF8192528}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -141,6 +143,14 @@ Global
 		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Release|x64.Build.0 = Release|x64
 		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Release|x86.ActiveCfg = Release|Win32
 		{D41ABB2A-5134-47AF-9C26-3106CE75CA1A}.Release|x86.Build.0 = Release|Win32
+		{63B4FD3D-1589-43C1-B9C5-380CF8192528}.Debug|x64.ActiveCfg = Debug|x64
+		{63B4FD3D-1589-43C1-B9C5-380CF8192528}.Debug|x64.Build.0 = Debug|x64
+		{63B4FD3D-1589-43C1-B9C5-380CF8192528}.Debug|x86.ActiveCfg = Debug|Win32
+		{63B4FD3D-1589-43C1-B9C5-380CF8192528}.Debug|x86.Build.0 = Debug|Win32
+		{63B4FD3D-1589-43C1-B9C5-380CF8192528}.Release|x64.ActiveCfg = Release|x64
+		{63B4FD3D-1589-43C1-B9C5-380CF8192528}.Release|x64.Build.0 = Release|x64
+		{63B4FD3D-1589-43C1-B9C5-380CF8192528}.Release|x86.ActiveCfg = Release|Win32
+		{63B4FD3D-1589-43C1-B9C5-380CF8192528}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
