@@ -11,7 +11,7 @@
 #endif
 using namespace std;
 
-//대전게임
+
 int SceneNum = 0;
 
 #pragma region Player 구조체
