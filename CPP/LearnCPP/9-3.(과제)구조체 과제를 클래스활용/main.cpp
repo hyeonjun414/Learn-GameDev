@@ -22,56 +22,86 @@ using namespace std;
 //             같은 함수를 매개변수의 데이터형이나 개수를 다르게하여 다른 기능을 
 //             수행하도록 하는 오버로딩을 통해 다형성을 실현한다.
 
+#pragma region 전역 변수
 
+int stageNum = 1; // 스테이지 진행도
+
+#pragma endregion
+
+
+#pragma region 플레이어 클래스
 class Player
 {
 private:
-	string name;
-	int maxHp;
-	int hp;
-	int damage;
-	int defense;
+	string name; // 이름
+	int hp; // 체력
+	int damage; // 공격력
+	int defense; // 방어력
 
 public:
+
 	Player()
 	{
 		name = "그냥용사";
-		maxHp = hp = 100;
+		hp = 100;
 		damage = 10;
-		defense = 10;
+		defense = 2;
 	}
 	Player(string name)
 	{
 		this->name = name;
-		this->maxHp = this->hp = 100;
+		this->hp = 100;
 		damage = 10;
-		defense = 10;
-	}
-	void ShowInfo()
-	{
-		cout << "******************** 플레이어 정보 *******************" << endl;
-		cout << "이  름 : " << name << endl;
-		cout << "체  력 : " << hp << " / " << maxHp << endl;
-		cout << "공격력 : " << damage << endl;
-		cout << "방어력 : " << defense << endl;
-		cout << "******************************************************" << endl;
+		defense = 2;
 	}
 
-	int Attack()
+	void ShowInfo() // 캐릭터 정보 출력
+	{
+		cout << "**********  캐릭터  **********" << endl;
+		cout << " 이  름 : " << name << endl;
+		cout << " 체  력 : " << hp << endl;
+		cout << " 공격력 : " << damage << endl;
+		cout << " 방어력 : " << defense << endl;
+		cout << "******************************" << endl;
+	}
+
+	int Attack() // 공격 함수
 	{
 		return damage;
 	}
-	void Hit(int damage)
+	void Hit(int damage) // 히트 함수
 	{
-
+		// 방어력 고려하여 데미지 적용
+		int resultDamage = damage - this->defense < 0 ? 0 : damage - this->defense;
+		cout << this->name << " 은(는) " << resultDamage << "의 피해를 입었습니다." << endl;
+		this->hp = this->hp - resultDamage < 0 ? 0 : this->hp - resultDamage;
 	}
-	void EquipWeapon()
-	{
 
+	void Rest(int point) // 휴식, point만큼 체력회복
+	{
+		hp += point;
+		cout << "휴식으로 플레이어의 체력이 " << point << " 만큼 회복되었습니다." << endl;
+	}
+
+	void Reinforce(int stageNum) // 강화, 스테이지당 한번 명상을 하여 캐릭터를 강화시킨다.
+	{
+		cout << "명상하여 강해집니다. 모든 수치가 증가합니다." << endl;
+		this->hp += 20 * stageNum;
+		this->damage += 10 * stageNum;
+		this->defense += 2 * stageNum;
+	}
+	bool Die() // 죽었는지 확인
+	{
+		if (this->hp == 0)
+			return true;
+		else
+			return false;
 	}
 
 };
+#pragma endregion
 
+#pragma region 몬스터 관련 클래스
 class Monster
 {
 protected:
@@ -81,29 +111,43 @@ protected:
 	int defense;
 
 public:
-	void Attack(Player* player)
+	int Attack() // 공격 함수
 	{
+		return damage;
 	}
-	void Skill(Player* player)
+	void Hit(int damage) // 히트 함수
 	{
+		// 방어력을 고려하여 데미지를 적용시킨다.
+		int resultDamage = damage - this->defense < 0 ? 0 : damage - this->defense;
+		cout << this->name << " 은(는) " << resultDamage << "의 피해를 입었습니다." << endl;
+		this->hp = this->hp - resultDamage < 0 ? 0 : this->hp - resultDamage;
 	}
-	void Hit(int damage)
+	void ShowFullInfo() // 상세하게 정보 출력
 	{
-		cout << this->name << "은(는) " << this->damage << "의 피해를 입었습니다." << endl;
-		this->hp = this->hp - damage < 0 ? 0 : this->hp - damage;
-		if (this->hp == 0) Die();
+		cout << " 이  름 : " << name << endl;
+		cout << " 체  력 : " << hp << endl;
+		cout << " 공격력 : " << damage << endl;
+		cout << " 방어력 : " << defense << endl;
+		cout << endl;
 	}
-	bool Die()
+	void ShowSimpleInfo() // 간단하게 정보 출력
+	{
+		cout << name << " 체력(" + to_string(this->hp) + ") 공격력(" + to_string(this->damage) + ") 방어력(" + to_string(this->defense) + ")\n\n";
+	}
+	bool Die() // 죽었는지 확인
 	{
 		if (this->hp == 0)
+		{
+			cout << name << "이 체력이 0이 되어 쓰러졌습니다." << endl;
 			return true;
+		}
 		else
 			return false;
 	}
 };
 class Slime : public Monster
 {
-public :
+public:
 	Slime(int number)
 	{
 		name = "슬라임" + to_string(number);;
@@ -114,7 +158,7 @@ public :
 };
 class Zombie : public Monster
 {
-public :
+public:
 	Zombie(int number)
 	{
 		name = "좀비" + to_string(number);
@@ -125,7 +169,7 @@ public :
 };
 class Dragon : public Monster
 {
-public :
+public:
 	Dragon()
 	{
 		name = "드래곤";
@@ -135,44 +179,37 @@ public :
 	}
 };
 
-class item
-{
+#pragma endregion
 
-};
-class Weapon : public item
-{
-
-};
-class Armor : public item
-{
-
-};
 
 #pragma region 외부 함수
 
+// 캐릭터 생성 함수
 Player* MakeCharacter()
 {
-	string name;
-	cout << "플레이어의 이름을 정해주세요 : ";
-	cin >> name;
-	Player* player = new Player(name);
+	//string name;
+	//cout << "플레이어의 이름을 정해주세요 : ";
+	//cin >> name;
+	Player* player = new Player("용사");
 	player->ShowInfo();
 	return player;
 }
+// 몬스터 생성 함수
 vector<Monster*> GenerateMonsters(int stageNum)
 {
 	vector<Monster*> monsterList;
+	cout << "\tSTAGE " << stageNum << endl;
 	switch (stageNum)
 	{
 	case 1:
-		cout << "슬라임 3마리가 생성되었습니다." << endl;
+		cout << "슬라임 3마리가 나타났습니다." << endl;
 		for (int i = 0; i < 3; i++)
-			monsterList.push_back(new Slime(i));
+			monsterList.push_back(new Slime(i+1));
 		break;
 	case 2:
-		cout << "좀비 2마리가 생성되었습니다." << endl;
+		cout << "좀비 2마리가 나타났습니다." << endl;
 		for (int i = 0; i < 2; i++)
-			monsterList.push_back(new Zombie(i));
+			monsterList.push_back(new Zombie(i+1));
 		break;
 	case 3:
 		cout << "드래곤이 출몰하였습니다." << endl;
@@ -180,52 +217,192 @@ vector<Monster*> GenerateMonsters(int stageNum)
 		break;
 	}
 	return monsterList;
-
 }
+// Fight함수에서 행동을 선택하는 함수이다.
 int SelectAction()
 {
 	int num;
-	cout << "*****************************" << endl;
-	cout << "원하는 동작을 선택하세요 : " << endl;
-	cout << "1. 공 격 " << endl;
-	cout << "2. 스 킬 " << endl;
-	cout << "3. 도 망 " << endl;
-	cout << "*****************************" << endl;
+	cout << "******************************\n" << endl;
+	cout << " 1. 공       격 " << endl;
+	cout << " 2. 상 태 확 인 " << endl;
+	cout << " 3. 턴 넘 기 기 \n" << endl;
+	cout << "******************************" << endl;
+	cout << "원하는 동작을 선택하세요 : ";
 	cin >> num;
 	return num;
 }
-
-#pragma endregion
-void WindowClear()
+// 
+void MonsterAttack(Player* player, vector<Monster*>& monsterList)
 {
-	int temp;
-	cin >> temp;
-	system("cls");
+	for (int i = 0; i < monsterList.size(); i++)
+	{
+		Sleep(500);
+		player->Hit(monsterList[i]->Attack());
+	}
 }
 
+void AttackRoutine(Player* player, vector<Monster*>& monsterList)
+{
+	int num;
+	// 플레이어 차례
+	cout << "공격을 진행합니다. 누구를 공격하시겠습니까? \n" << endl;
+	for (int i = 0; i < monsterList.size(); i++)
+	{
+		cout << i + 1 << ". ";
+		monsterList[i]->ShowSimpleInfo();
+	}
+	cout << "공격할 대상 : ";
+	cin >> num;
+	if (num < 1)
+		num = 1;
+	else if (num > monsterList.size())
+		num = monsterList.size();
+	Sleep(500);
+	monsterList[num - 1]->Hit(player->Attack());
+
+	// 플레이어 공격에 따른 결과 처리
+	for (int i = 0; i < monsterList.size();)
+	{
+		// 죽은 몬스터를 제외한다.
+		if (monsterList[i]->Die())
+			monsterList.erase(monsterList.begin() + i);
+		else
+			i++;
+	}
+
+	// 몬스터 차례, 만약 남은 몬스터가 있으면 공격을 진행
+	// 없으면 전투를 끝내며 다음 스테이지로 넘어간다.
+	if (!monsterList.empty())
+	{
+		MonsterAttack(player, monsterList);
+	}
+	else
+	{
+		cout << "스테이지 클리어 !!" << endl;
+		return;
+	}
+}
+
+void ShowMonsterInfo(vector<Monster*> monster)
+{
+	for (int i = 0; i < monster.size(); i++)
+	{
+		monster[i]->ShowFullInfo();
+	}
+}
+
+void Fight(Player* player, vector<Monster*> monsterList)
+{
+	while (!(player->Die() || monsterList.size() == 0))
+	{
+		switch (SelectAction())
+		{
+		case 1: // 공격
+			AttackRoutine(player, monsterList);
+			Sleep(1000);
+			break;
+		case 2: // 상태 확인
+			player->ShowInfo();
+			cout << "**********  몬스터  **********" << endl << endl;
+			ShowMonsterInfo(monsterList);
+			cout << "******************************" << endl;
+			Sleep(2000);
+			break;
+		case 3: // 턴넘김
+			MonsterAttack(player, monsterList);
+			Sleep(1000);
+			break;
+		}
+		system("cls");
+	}
+}
+
+// 스테이지 중간 휴식 시간, 플레이어 상태와 휴식 기능, 장비를 장착할 수 있는 메뉴를 제공한다.
+// 휴식은 스테이지마다 1회 제공
+void RestTime(Player* player)
+{
+	int restPoint = 1;
+	int reinforcePoint = 1;
+	int num;
+	while (true)
+	{
+		system("cls");
+		cout << " 다음 스테이지 : STAGE " << stageNum+1 << endl;
+		cout << "******************************" << endl;
+		cout << " 1. 현재 상태 확인 " << endl;
+		cout << " 2. 휴식 ( 현재 남은 휴식 횟수 : " << restPoint << "회 )" << endl;
+		cout << " 3. 명상 ( 현재 남은 명상 횟수 : " << reinforcePoint << "회)" << endl;
+		cout << " 4. 휴식 종료, 다음 전투로! " << endl;
+		cout << "******************************" << endl;
+		cout << "원하는 동작을 선택하세요 : ";
+		cin >> num;
+		switch (num)
+		{
+		case 1: // 현재 상태 확인
+			player->ShowInfo();
+			Sleep(2000);
+			break;
+		case 2:
+			if (restPoint > 0)
+			{
+				player->Rest(10);
+				restPoint--;
+			}
+			else
+				cout << "휴식 횟수를 전부 사용했습니다." << endl;
+			Sleep(1000);
+			break;
+		case 3: // 명 상
+			if (reinforcePoint > 0)
+			{
+				player->Reinforce(stageNum);
+				reinforcePoint--;
+			}
+			else
+				cout << "명상 횟수를 전부 사용했습니다." << endl;
+			Sleep(1000);
+			break;
+		case 4: // 다음 스테이지로
+			cout << "다음 스테이지로 이동합니다." << endl;
+			stageNum++;
+			Sleep(1000);
+			return;
+			break;
+		}
+	}
+}
+
+void EndGame()
+{
+	cout << "게임을 클리어 했습니다. 축하합니다!" << endl;
+}
+
+#pragma endregion
 
 
 void Routine()
 {
 	/*
 	1. 캐릭터 생성
-	2. stage1. 몬스터 생성 -> Fight -> 전리품 획득(무기 하나가 확정으로 나옴)
-	3. 정비 시간 ( 무기 장착 )
-	4. stage2. 몬스터 생성 -> Fight -> 전리품 획득(방어구 하나가 확정으로 나옴)
-	5. 정비 시간 ( 방어구 장착 )
+	2. stage1. 몬스터 생성 -> Fight -> 승리 -> 다음 스테이지
+	3. 정비 시간 ( 휴식 및 명상(강화) )
+	4. stage2. 몬스터 생성 -> Fight -> 승리 -> 다음 스테이지
+	5. 정비 시간 ( 휴식 및 명상(강화) )
 	6. stage3. 몬스터 생성 -> Fight -> 승리 -> 끝
 	*/
-	// 1
-	Player* player = MakeCharacter();
-	int stageNum = 1;
-	while (true)
+	Player* player = MakeCharacter(); // 캐릭터 생성
+	Sleep(2000);
+	while (stageNum<4)
 	{
-		vector<Monster*> monsterList = GenerateMonsters(stageNum);
-		
-		WindowClear();
+		system("cls");
+		Fight(player, GenerateMonsters(stageNum));
+		RestTime(player);
 	}
+	EndGame();
+	delete player;
 }
 int main()
 {
 	Routine();
+	_CrtDumpMemoryLeaks(); // 메모리 릭 확인
 }
