@@ -59,6 +59,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lv1.문자열 내 p와 y의
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lv1.문자열 내림차순으로 배치하기", "Lv1.문자열 내림차순으로 배치하기\Lv1.문자열 내림차순으로 배치하기.vcxproj", "{DF3A77CB-A220-4DD7-AAE0-CE3A0897E95D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lv1.문자열 다루기 기본", "Lv1.문자열 다루기 기본\Lv1.문자열 다루기 기본.vcxproj", "{4C1A3127-7DA9-41A0-8212-BCEA96487749}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -291,6 +293,14 @@ Global
 		{DF3A77CB-A220-4DD7-AAE0-CE3A0897E95D}.Release|x64.Build.0 = Release|x64
 		{DF3A77CB-A220-4DD7-AAE0-CE3A0897E95D}.Release|x86.ActiveCfg = Release|Win32
 		{DF3A77CB-A220-4DD7-AAE0-CE3A0897E95D}.Release|x86.Build.0 = Release|Win32
+		{4C1A3127-7DA9-41A0-8212-BCEA96487749}.Debug|x64.ActiveCfg = Debug|x64
+		{4C1A3127-7DA9-41A0-8212-BCEA96487749}.Debug|x64.Build.0 = Debug|x64
+		{4C1A3127-7DA9-41A0-8212-BCEA96487749}.Debug|x86.ActiveCfg = Debug|Win32
+		{4C1A3127-7DA9-41A0-8212-BCEA96487749}.Debug|x86.Build.0 = Debug|Win32
+		{4C1A3127-7DA9-41A0-8212-BCEA96487749}.Release|x64.ActiveCfg = Release|x64
+		{4C1A3127-7DA9-41A0-8212-BCEA96487749}.Release|x64.Build.0 = Release|x64
+		{4C1A3127-7DA9-41A0-8212-BCEA96487749}.Release|x86.ActiveCfg = Release|Win32
+		{4C1A3127-7DA9-41A0-8212-BCEA96487749}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
