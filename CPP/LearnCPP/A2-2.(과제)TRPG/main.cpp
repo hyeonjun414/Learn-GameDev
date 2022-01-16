@@ -74,7 +74,7 @@ void DestroyVector_Item(vector<Item*>& v) // 아이템 동적할당 메모리 해제
 }
 #pragma endregion
 
-#pragma region 캐릭터 클래스, 플레이어와 몬스터의 부모 클래스
+#pragma region 캐릭터 클래스, 아이템 클래스
 class Character
 {
 protected:
@@ -131,18 +131,8 @@ public:
 		this->hp = this->hp - resultDamage < 0 ? 0 : this->hp - resultDamage;
 	}
 
-	bool Die() // 죽었는지 확인
-	{
-		if (this->hp == 0)
-		{
-			cout << name << "이 체력이 0이 되어 쓰러졌습니다." << endl;
-			return true;
-		}
-		else
-			return false;
-	}
 };
-#pragma endregion
+
 
 #pragma region 아이템 관련 클래스
 class Item
@@ -182,7 +172,7 @@ public:
 class Equip : public Item // 캐릭터 방어력 관련 아이템
 {
 	int armor;
-public :
+public:
 	Equip(string name, int armor)
 	{
 		this->name = name;
@@ -196,47 +186,6 @@ public :
 };
 #pragma endregion
 
-
-
-#pragma region 몬스터 관련 클래스
-class Monster : public Character {
-public:
-
-	int exp;
-	int gold;
-	Monster(string name, int hp, int damage, int defense, int exp, int gold)
-	{
-		this->name = name;
-		this->hp = hp;
-		this->damage = damage;
-		this->defense = defense;
-		this->exp = exp;
-		this->gold = gold;
-	}
-	Monster(int num, string name, int hp, int damage, int defense, int exp, int gold)
-	{
-		this->name = name + to_string(num);;
-		this->hp = hp;
-		this->damage = damage;
-		this->defense = defense;
-		this->exp = exp;
-		this->gold = gold;
-	}
-};
-#pragma endregion
-
-void ShowMonsters(vector<Monster*> monsterList)
-{
-	cout << endl;
-	for (int i = 0; i < monsterList.size(); i++)
-	{
-		cout << i + 1 << ". ";
-		monsterList[i]->ShowSimpleInfo();
-	}
-	cout << endl;
-}
-
-#pragma region 플레이어 관련 클래스
 class Player : public Character
 {
 protected:
@@ -244,11 +193,11 @@ protected:
 	int maxExp; // 최대 경험치
 	int exp; // 현재 경험치
 	int gold; // 현재 소지 골드
-	
 
-public :
+
+public:
 	vector<Item*> inventory;
-	
+
 	void AddItem(Item* item) // 아이템 추가 함수
 	{
 		Typing(item->GetName() + " 을 가방에 추가하였습니다.");
@@ -282,10 +231,10 @@ public :
 	void SetGold(int value)
 	{
 		gold += value;
-		if(value > 0)
+		if (value > 0)
 			Typing(to_string(value) + "Gold를 습득했습니다. 현재 소지금 : " + to_string(gold) + " Gold");
 		else
-			Typing(to_string(value) + "Gold를 사용했습니다. 현재 소지금 : " + to_string(gold) + " Gold");
+			Typing(to_string(value*-1) + "Gold를 사용했습니다. 현재 소지금 : " + to_string(gold) + " Gold");
 	}
 
 	void ShowInventory() // 현재 인벤토리 상태를 보여준다.
@@ -311,16 +260,115 @@ public :
 	void ShowInfo() // 캐릭터 정보 출력
 	{
 		cout << "******************** 캐릭터 정보 ***********************" << endl;
-		cout << "\t 체  력 : " << hp      << "\t\t레  벨 : " << level << endl;
-		cout << "\t 공격력 : " << damage  << "\t\t경험치 : " << exp << "/"<< maxExp << endl;
-		cout << "\t 방어력 : " << defense << "\t\t보유금 : " << gold <<" Gold" << endl;
+		cout << "\t 체  력 : " << hp << "\t\t레  벨 : " << level << endl;
+		cout << "\t 공격력 : " << damage << "\t\t경험치 : " << exp << "/" << maxExp << endl;
+		cout << "\t 방어력 : " << defense << "\t\t보유금 : " << gold << " Gold" << endl;
 		cout << "---------------------- 인벤토리 ------------------------" << endl;
 		ShowInventory();
 		cout << "********************************************************" << endl;
 	}
-	
+
 	virtual void Skill(vector<Monster*>& monsterList) = 0;
 };
+#pragma endregion
+
+#pragma region 몬스터 관련 클래스
+class Monster : public Character {
+public:
+
+	int exp;
+	int gold;
+
+	virtual bool Die(Player* player) // 죽었는지 확인
+	{
+		if (this->hp == 0)
+		{
+			cout << name << "이 체력이 0이 되어 쓰러졌습니다." << endl;
+			player->SetExp(exp);
+			player->SetGold(gold);
+			return true;
+		}
+		else
+			return false;
+	}
+};
+class Common : public Monster
+{
+
+public :
+	Common(int num, string name, int hp, int damage, int defense, int exp, int gold)
+	{
+		this->name = name + to_string(num);;
+		this->hp = hp;
+		this->damage = damage;
+		this->defense = defense;
+		this->exp = exp;
+		this->gold = gold;
+	}
+};
+class Boss : public Monster
+{
+public :
+	Boss(string name, int hp, int damage, int defense, int exp, int gold)
+	{
+		this->name = name;
+		this->hp = hp;
+		this->damage = damage;
+		this->defense = defense;
+		this->exp = exp;
+		this->gold = gold;
+	}
+	bool Die(Player* player)
+	{
+		int select;
+		if (this->hp == 0)
+		{
+			this->damage = 9999;
+			Typing(this->name + "이 쓰러지기 전에 분노하며 발버둥칩니다.");
+			Typing(this->name + "이 왼발을 들어 내려 찍으려합니다. 어디로 피하시겠습니까?");
+			Typing("1. 왼쪽");
+			Typing("2. 오른쪽");
+			cout << "당신의 선택 : ";
+			cin >> select;
+			switch (select)
+			{
+			case 1:
+				Typing("왼발을 피하고 반격에 성공하였습니다!");
+				this->Hit(player->Attack());
+				break;
+			case 2:
+				Typing("왼발에 직격당했습니다.");
+				player->Hit(this->Attack());
+				return false;
+				break;
+			}
+			Typing(this->name + "이 이번엔 오른발을 들어 내려 찍으려 합니다. 어디로 피하시겠습니까?");
+			Typing("1. 왼쪽");
+			Typing("2. 오른쪽");
+			cout << "당신의 선택 : ";
+			cin >> select;
+			switch (select)
+			{
+			case 1:
+				Typing("오른발에 직격당했습니다.");
+				player->Hit(this->Attack());
+				return false;
+				break;
+			case 2:
+				Typing("오른발을 피하고 반격에 성공하였습니다!");
+				this->Hit(player->Attack());
+				break;
+			}
+			Typing(this->name + "은 힘을 다하여 쓰러집니다.");
+			return true;
+		}
+		else
+			return false;
+	}
+};
+#pragma endregion
+#pragma region 플레이어 관련 클래스
+
 class Warrior : public Player
 {
 public :
@@ -347,7 +395,13 @@ public :
 	{
 		int select;
 		Typing("\t\t전사! 파워 슬래시!!!");
-		ShowMonsters(monsterList);
+		cout << endl;
+		for (int i = 0; i < monsterList.size(); i++)
+		{
+			cout << i + 1 << ". ";
+			monsterList[i]->ShowSimpleInfo();
+		}
+		cout << endl;
 		cout << "누구에게 스킬을 사용하시겠습니까? :";
 		cin >> select;
 		if (select < 1) select = 1;
@@ -390,8 +444,6 @@ public :
 };
 #pragma endregion
 
-
-
 #pragma region 외부 함수
 void OpeningScene()
 {
@@ -411,10 +463,8 @@ void OpeningScene()
 		"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 		"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 		"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
-		"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 		},
 		{
-		"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 		"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 		"■■■■■■■■■□□□□□□□■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 		"■■■■■■■■□■■■■■■■□■■■■■■■■■■■■■■■■■■■■■□■■■■■■■■■",
@@ -436,14 +486,23 @@ void OpeningScene()
 	for (int i = 0; i < str.size(); i++)
 	{
 		gotoxy(0, 0);
-		for(int j = 0; j < str[i].size(); j++)
-			Typing(str[i][j]);
+		for (int j = 0; j < str[i].size(); j++)
+		{
+			cout << str[i][j] << endl;
+			Sleep(50);
+		}
 		Sleep(200);
 	}
+	Typing("한적한 곳이었던 어느 마을 근처에 드래곤이 둥지를 틀었다.");
+	Sleep(500);
+	Typing("몬스터들이 생겨나고 마을은 공포에 떨기 시작했다.");
+	Sleep(500);
+	Typing("마침 근처를 지나가던 모험가인 당신.. 불쌍한 마을을 구하기 위해 몬스터와 싸운다.");
+	Sleep(500);
 	Sleep(delayTime);
 	system("cls");
 }
-void EndingScene()
+void GoodEndingScene()
 {
 	vector<vector<string>> str = {
 	{
@@ -461,10 +520,8 @@ void EndingScene()
 	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
-	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 	},
 	{
-	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 	"■■■■■■■■■□□□□□□□■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
 	"■■■■■■■■□■■■■■■■□■■■■■■■■■■■■■■■■■■■■■□■■■■■■■■■",
@@ -482,14 +539,81 @@ void EndingScene()
 	}
 
 	};
-
 	for (int i = 0; i < str.size(); i++)
 	{
 		gotoxy(0, 0);
 		for (int j = 0; j < str[i].size(); j++)
-			Typing(str[i][j]);
-		Sleep(500);
+		{
+			cout << str[i][j] << endl;
+			Sleep(50);
+		}
+		Sleep(200);
 	}
+	Typing("마침내 드래곤을 쓰러뜨리고 마을을 해방했다!");
+	Sleep(500);
+	Typing("몬스터는 이제 보이지 않고 행복 가득한 마을 사람들을 얼굴만이 눈에 들어온다.");
+	Sleep(500);
+	Typing("당신은 조용히 마을을 나와 모험을 계속 이어간다.");
+	Sleep(500);
+	Typing("- 굿 엔딩 -");
+	Sleep(500);
+	Sleep(delayTime);
+}
+void BadEndingScene()
+{
+	vector<vector<string>> str = {
+	{
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	},
+	{
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■□□□□□□□■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■□■■■■■■■□■■■■■■■■■■■■■■■■■■■■■□■■■■■■■■■",
+	"■■■■■■■■□■■■■■■■□■■■■■■■■■■■■■■□■■■■■■□■■■■■■■■■",
+	"■■■■■■■■□■■■■■■■□■■■■■■■■■■■■■□■■■■■■■□■■■■■■■■■",
+	"■■■■■■■■■□□□□□□□■■■■■■■■■■■■■□■■■■■■■■□■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■□■□■■■■■■■□■■■■■■■■■",
+	"■■■■■■■■■■□■■■□■■■■■■■■■■■■□■■■□■■■■■■□□□□□■■■■■",
+	"■■■■■□□□□□□□□□□□□□□□□■■■■■□■■■■■□■■■■■□■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■□■■■■■■■■■",
+	"■■■■■■■■■■□□□□□■■■■■■■■■■■■■■■■■■■■■■■□■■■■■■■■■",
+	"■■■■■■■■■□■■■■■□■■■■■■■■■■■■■■■■■■■■■■□■■■■■■■■■",
+	"■■■■■■■■■■□□□□□■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	"■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+	}
+	};
+	for (int i = 0; i < str.size(); i++)
+	{
+		gotoxy(0, 0);
+		for (int j = 0; j < str[i].size(); j++)
+		{
+			cout << str[i][j] << endl;
+			Sleep(50);
+		}
+		Sleep(200);
+	}
+	Typing("드래곤에게 아쉽게 패배했다. ");
+	Sleep(500);
+	Typing("당신은 분하지만 천천히 죽어가고 있다.");
+	Sleep(500);
+	Typing("다음 모험가가 드래곤을 해치워주길 바라며 눈을 감는다.");
+	Sleep(500);
+	Typing("- 배드 엔딩 -");
+	Sleep(500);
+	Sleep(delayTime);
 }
 
 #pragma region 캐릭터 관련
@@ -511,7 +635,7 @@ Player* MakePlayer() // 캐릭터 생성 함수
 	{
 	case 1:
 		player = new Warrior(name);
-		Typing("당신은 전사군요! 전사는 한명의 적에게 일반 공격보다 4배 강한 파워 슬래시를 사용할 수 있어요.");
+		Typing("당신은 전사군요! 전사는 한명의 적에게 일반 공격보다 2배 강한 파워 슬래시를 사용할 수 있어요.");
 		break;
 	case 2:
 	default:
@@ -691,6 +815,17 @@ void GoTown(Player* player) // 마을 루틴
 #pragma endregion
 
 #pragma region 필드 관련
+void ShowMonsters(vector<Monster*> monsterList) // 현재 몬스터를 출력
+{
+	cout << endl;
+	for (int i = 0; i < monsterList.size(); i++)
+	{
+		cout << i + 1 << ". ";
+		monsterList[i]->ShowSimpleInfo();
+	}
+	cout << endl;
+}
+
 vector<Monster*> GenerateMonsters(int stageNum) // 몬스터 생성 함수
 {
 	vector<Monster*> monsterList;
@@ -698,14 +833,14 @@ vector<Monster*> GenerateMonsters(int stageNum) // 몬스터 생성 함수
 	{
 	case 1:
 		for (int i = 0; i < 3; i++)
-			monsterList.push_back(new Monster(i + 1, "슬라임", 10, 5, 5, 5, 10));
+			monsterList.push_back(new Common(i + 1, "슬라임", 10, 5, 5, 5, 10));
 		break;
 	case 2:
 		for (int i = 0; i < 2; i++)
-			monsterList.push_back(new Monster(i + 1, "좀비", 20, 15, 15, 7, 20));
+			monsterList.push_back(new Common(i + 1, "좀비", 20, 7, 7, 7, 20));
 		break;
 	case 3:
-		monsterList.push_back(new Monster("드래곤", 100, 120, 20, 20, 100));
+		monsterList.push_back(new Boss("드래곤", 100, 120, 10, 20, 100));
 		break;
 	}
 	return monsterList;
@@ -717,16 +852,17 @@ void MonsterAttack(Player* player, vector<Monster*>& monsterList) // 몬스터가 플
 	for (int i = 0; i < monsterList.size();)
 	{
 		// 죽은 몬스터를 삭제하고 해당 몬스터의 경험치와 골드만큼을 플레이어에 추가한다.
-		if (monsterList[i]->Die())
+		if (monsterList[i]->Die(player))
 		{
-			player->SetExp(monsterList[i]->exp);
-			player->SetGold(monsterList[i]->gold);
 			monsterList.erase(monsterList.begin() + i);
 			Sleep(attackDelay);
 		}
 		else
 			i++;
 	}
+
+	if (player->GetHp() <= 0) return;
+
 	// 남아 있는 몬스터는 플레이어에게 공격을 수행한다.
 	for (int i = 0; i < monsterList.size(); i++)
 	{
@@ -744,6 +880,11 @@ void GoBattle(Player* player) // 전투 루틴
 	while (true)
 	{
 		system("cls");
+		if (player->GetHp() <= 0)
+		{
+			isEnd = true;
+			return;
+		}
 		// 등장한 몬스터를 모두 잡으면 전투를 마치고 필드로 돌아간다.
 		if (monsters.empty())
 		{
@@ -851,6 +992,7 @@ void GoField(Player* player) // 필드 루틴
 	while (true)
 	{
 		system("cls");
+		if (player->GetHp() <= 0) return;
 		if (curStage > 3) return;
 		Typing("이번 스테이지 : STAGE " + to_string(curStage));
 		Typing("마을 밖은 왠지 모를 불길한 분위기를 풍긴다...");
@@ -881,12 +1023,11 @@ void GoField(Player* player) // 필드 루틴
 }
 
 #pragma endregion
-
-
+#pragma endregion 
 
 void Routine()
 {
-	//OpeningScene();
+	OpeningScene();
 	Player* player = MakePlayer();
 	while (!isEnd)
 	{
@@ -902,8 +1043,12 @@ void Routine()
 			break;
 		}
 	}
+	if (player->GetHp() <= 0)
+		BadEndingScene();
+	else
+		GoodEndingScene();
 	delete player;
-	EndingScene();
+
 }
 int main()
 {
