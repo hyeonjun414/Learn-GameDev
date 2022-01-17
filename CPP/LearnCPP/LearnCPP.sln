@@ -51,6 +51,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A2-2.(과제)TRPG", "A2-2.(
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A2-3.has-a 관계(아이템 사용)", "A2-3.has-a 관계(아이템 사용)\A2-3.has-a 관계(아이템 사용).vcxproj", "{23C2770A-873C-4DCF-BE42-633A3786F1F1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A3-1.CPP복습1", "A3-1.CPP복습1\A3-1.CPP복습1.vcxproj", "{6502AA18-077B-44A7-9BAC-07F27B103213}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A3-2.함수포인터", "A3-2.함수포인터\A3-2.함수포인터.vcxproj", "{3A506480-F24E-47E5-9308-8BB14A53278E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -251,6 +255,22 @@ Global
 		{23C2770A-873C-4DCF-BE42-633A3786F1F1}.Release|x64.Build.0 = Release|x64
 		{23C2770A-873C-4DCF-BE42-633A3786F1F1}.Release|x86.ActiveCfg = Release|Win32
 		{23C2770A-873C-4DCF-BE42-633A3786F1F1}.Release|x86.Build.0 = Release|Win32
+		{6502AA18-077B-44A7-9BAC-07F27B103213}.Debug|x64.ActiveCfg = Debug|x64
+		{6502AA18-077B-44A7-9BAC-07F27B103213}.Debug|x64.Build.0 = Debug|x64
+		{6502AA18-077B-44A7-9BAC-07F27B103213}.Debug|x86.ActiveCfg = Debug|Win32
+		{6502AA18-077B-44A7-9BAC-07F27B103213}.Debug|x86.Build.0 = Debug|Win32
+		{6502AA18-077B-44A7-9BAC-07F27B103213}.Release|x64.ActiveCfg = Release|x64
+		{6502AA18-077B-44A7-9BAC-07F27B103213}.Release|x64.Build.0 = Release|x64
+		{6502AA18-077B-44A7-9BAC-07F27B103213}.Release|x86.ActiveCfg = Release|Win32
+		{6502AA18-077B-44A7-9BAC-07F27B103213}.Release|x86.Build.0 = Release|Win32
+		{3A506480-F24E-47E5-9308-8BB14A53278E}.Debug|x64.ActiveCfg = Debug|x64
+		{3A506480-F24E-47E5-9308-8BB14A53278E}.Debug|x64.Build.0 = Debug|x64
+		{3A506480-F24E-47E5-9308-8BB14A53278E}.Debug|x86.ActiveCfg = Debug|Win32
+		{3A506480-F24E-47E5-9308-8BB14A53278E}.Debug|x86.Build.0 = Debug|Win32
+		{3A506480-F24E-47E5-9308-8BB14A53278E}.Release|x64.ActiveCfg = Release|x64
+		{3A506480-F24E-47E5-9308-8BB14A53278E}.Release|x64.Build.0 = Release|x64
+		{3A506480-F24E-47E5-9308-8BB14A53278E}.Release|x86.ActiveCfg = Release|Win32
+		{3A506480-F24E-47E5-9308-8BB14A53278E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

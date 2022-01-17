@@ -32,8 +32,8 @@ class Player;
 class Warrior;
 class Archor;
 class Monster;
-class Slime;
-class Dragon;
+class Common;
+class Boss;
 class Item;
 class Potion;
 class Equip;
@@ -57,21 +57,15 @@ void Typing(string str) // 타이핑 효과
 	}
 	cout << "\n\n";
 }
+template <typename T>
+void DestroyVector(vector<T*>& v) // 몬스터 동적할당 메모리 해제
+{
+	while (!v.empty()) {
+		delete v.back();
+		v.pop_back();
+	}
+}
 
-void DestroyVector_Monster(vector<Monster*>& v) // 몬스터 동적할당 메모리 해제
-{
-	while (!v.empty()) {
-		delete v.back();
-		v.pop_back();
-	}
-}
-void DestroyVector_Item(vector<Item*>& v) // 아이템 동적할당 메모리 해제
-{
-	while (!v.empty()) {
-		delete v.back();
-		v.pop_back();
-	}
-}
 #pragma endregion
 
 #pragma region 캐릭터 클래스, 아이템 클래스
@@ -171,7 +165,7 @@ public:
 
 class Equip : public Item // 캐릭터 방어력 관련 아이템
 {
-	int armor;
+	int armor; // 방어력 증가 수치
 public:
 	Equip(string name, int armor)
 	{
@@ -189,7 +183,7 @@ public:
 class Player : public Character
 {
 protected:
-	int level;
+	int level; // 레벨
 	int maxExp; // 최대 경험치
 	int exp; // 현재 경험치
 	int gold; // 현재 소지 골드
@@ -198,6 +192,16 @@ protected:
 public:
 	vector<Item*> inventory;
 
+	~Player()
+	{
+		// 인벤토리 메모리 해제
+		vector<Item*>::iterator iter = inventory.begin();
+		for (; iter != inventory.end(); ++iter)
+		{
+			delete (*iter);
+		}
+		inventory.clear();
+	}
 	void AddItem(Item* item) // 아이템 추가 함수
 	{
 		Typing(item->GetName() + " 을 가방에 추가하였습니다.");
@@ -219,7 +223,7 @@ public:
 			level++;
 			maxHp += 5;
 			hp += 5;
-			damage += 5;
+			damage += 10;
 			defense += 2;
 			Typing("플레이어가 레벨업 했습니다. 현재 레벨 : " + to_string(level));
 		}
@@ -254,6 +258,7 @@ public:
 	void UseInventoryItem(int index) // index에 맞는 인벤토리의 아이템을 사용한다.
 	{
 		inventory[index]->Use(this);
+		delete inventory[index];
 		inventory.erase(inventory.begin() + index);
 	}
 
@@ -367,6 +372,7 @@ public :
 	}
 };
 #pragma endregion
+
 #pragma region 플레이어 관련 클래스
 
 class Warrior : public Player
@@ -493,7 +499,7 @@ void OpeningScene()
 		}
 		Sleep(200);
 	}
-	Typing("한적한 곳이었던 어느 마을 근처에 드래곤이 둥지를 틀었다.");
+	Typing("한적한 곳이었던 어느 마을 근처에 드래곤이 자리를 잡았다.");
 	Sleep(500);
 	Typing("몬스터들이 생겨나고 마을은 공포에 떨기 시작했다.");
 	Sleep(500);
@@ -605,7 +611,7 @@ void BadEndingScene()
 		}
 		Sleep(200);
 	}
-	Typing("드래곤에게 아쉽게 패배했다. ");
+	Typing("모험중에 몬스터에게 아쉽게 패배했다. ");
 	Sleep(500);
 	Typing("당신은 분하지만 천천히 죽어가고 있다.");
 	Sleep(500);
@@ -710,6 +716,7 @@ void GoShop(Player* player) // 상점 루틴
 				}
 				else
 					Typing("돈이 부족해.");
+				break;
 			case 3:
 				if (player->GetGold() >= 150)
 				{
@@ -854,6 +861,7 @@ void MonsterAttack(Player* player, vector<Monster*>& monsterList) // 몬스터가 플
 		// 죽은 몬스터를 삭제하고 해당 몬스터의 경험치와 골드만큼을 플레이어에 추가한다.
 		if (monsterList[i]->Die(player))
 		{
+			delete(monsterList[i]);
 			monsterList.erase(monsterList.begin() + i);
 			Sleep(attackDelay);
 		}
@@ -883,11 +891,13 @@ void GoBattle(Player* player) // 전투 루틴
 		if (player->GetHp() <= 0)
 		{
 			isEnd = true;
+			DestroyVector(monsters);
 			return;
 		}
 		// 등장한 몬스터를 모두 잡으면 전투를 마치고 필드로 돌아간다.
 		if (monsters.empty())
 		{
+			
 			Typing("모든 몬스터를 무찔렀다. 일단 마을 앞으로 돌아가자.");
 			curStage++;
 			if (curStage == 3)
@@ -980,11 +990,13 @@ void GoBattle(Player* player) // 전투 루틴
 			{
 				Typing("무사히 마을 앞까지 도망쳤다.");
 				Sleep(delayTime);
+				DestroyVector(monsters);
 				return;
 			}
 			break;
 		}
 	}
+	DestroyVector(monsters);
 }
 void GoField(Player* player) // 필드 루틴
 {
@@ -1028,7 +1040,7 @@ void GoField(Player* player) // 필드 루틴
 void Routine()
 {
 	OpeningScene();
-	Player* player = MakePlayer();
+	Player* player = MakePlayer(); // 캐릭터 생성
 	while (!isEnd)
 	{
 		system("cls");
@@ -1047,9 +1059,11 @@ void Routine()
 		BadEndingScene();
 	else
 		GoodEndingScene();
+	
 	delete player;
 
 }
+
 int main()
 {
 	Routine();
