@@ -65,6 +65,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lv1.서울에서 김서방 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lv1.수박수박수박수박수박수", "Lv1.수박수박수박수박수박수\Lv1.수박수박수박수박수박수.vcxproj", "{0559FEAA-147B-440B-962A-C6F2DCD45B94}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lv1.문자열을 정수로 바꾸기", "Lv1.문자열을 정수로 바꾸기\Lv1.문자열을 정수로 바꾸기.vcxproj", "{68BDA907-F5F0-40A8-8DEF-F78780AD1125}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lv1.시저 암호", "Lv1.시저 암호\Lv1.시저 암호.vcxproj", "{15C2FE56-9980-412F-8544-4C68FE50F0A1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lv1.약수의 합", "Lv1.약수의 합\Lv1.약수의 합.vcxproj", "{2CBFE5C6-20CE-4FA8-852B-0E34F43D3854}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lv1. 이상한 문자 만들기", "Lv1. 이상한 문자 만들기\Lv1. 이상한 문자 만들기.vcxproj", "{52882D1B-0CE3-4F6A-923E-CB22A56DA1B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -321,6 +329,38 @@ Global
 		{0559FEAA-147B-440B-962A-C6F2DCD45B94}.Release|x64.Build.0 = Release|x64
 		{0559FEAA-147B-440B-962A-C6F2DCD45B94}.Release|x86.ActiveCfg = Release|Win32
 		{0559FEAA-147B-440B-962A-C6F2DCD45B94}.Release|x86.Build.0 = Release|Win32
+		{68BDA907-F5F0-40A8-8DEF-F78780AD1125}.Debug|x64.ActiveCfg = Debug|x64
+		{68BDA907-F5F0-40A8-8DEF-F78780AD1125}.Debug|x64.Build.0 = Debug|x64
+		{68BDA907-F5F0-40A8-8DEF-F78780AD1125}.Debug|x86.ActiveCfg = Debug|Win32
+		{68BDA907-F5F0-40A8-8DEF-F78780AD1125}.Debug|x86.Build.0 = Debug|Win32
+		{68BDA907-F5F0-40A8-8DEF-F78780AD1125}.Release|x64.ActiveCfg = Release|x64
+		{68BDA907-F5F0-40A8-8DEF-F78780AD1125}.Release|x64.Build.0 = Release|x64
+		{68BDA907-F5F0-40A8-8DEF-F78780AD1125}.Release|x86.ActiveCfg = Release|Win32
+		{68BDA907-F5F0-40A8-8DEF-F78780AD1125}.Release|x86.Build.0 = Release|Win32
+		{15C2FE56-9980-412F-8544-4C68FE50F0A1}.Debug|x64.ActiveCfg = Debug|x64
+		{15C2FE56-9980-412F-8544-4C68FE50F0A1}.Debug|x64.Build.0 = Debug|x64
+		{15C2FE56-9980-412F-8544-4C68FE50F0A1}.Debug|x86.ActiveCfg = Debug|Win32
+		{15C2FE56-9980-412F-8544-4C68FE50F0A1}.Debug|x86.Build.0 = Debug|Win32
+		{15C2FE56-9980-412F-8544-4C68FE50F0A1}.Release|x64.ActiveCfg = Release|x64
+		{15C2FE56-9980-412F-8544-4C68FE50F0A1}.Release|x64.Build.0 = Release|x64
+		{15C2FE56-9980-412F-8544-4C68FE50F0A1}.Release|x86.ActiveCfg = Release|Win32
+		{15C2FE56-9980-412F-8544-4C68FE50F0A1}.Release|x86.Build.0 = Release|Win32
+		{2CBFE5C6-20CE-4FA8-852B-0E34F43D3854}.Debug|x64.ActiveCfg = Debug|x64
+		{2CBFE5C6-20CE-4FA8-852B-0E34F43D3854}.Debug|x64.Build.0 = Debug|x64
+		{2CBFE5C6-20CE-4FA8-852B-0E34F43D3854}.Debug|x86.ActiveCfg = Debug|Win32
+		{2CBFE5C6-20CE-4FA8-852B-0E34F43D3854}.Debug|x86.Build.0 = Debug|Win32
+		{2CBFE5C6-20CE-4FA8-852B-0E34F43D3854}.Release|x64.ActiveCfg = Release|x64
+		{2CBFE5C6-20CE-4FA8-852B-0E34F43D3854}.Release|x64.Build.0 = Release|x64
+		{2CBFE5C6-20CE-4FA8-852B-0E34F43D3854}.Release|x86.ActiveCfg = Release|Win32
+		{2CBFE5C6-20CE-4FA8-852B-0E34F43D3854}.Release|x86.Build.0 = Release|Win32
+		{52882D1B-0CE3-4F6A-923E-CB22A56DA1B3}.Debug|x64.ActiveCfg = Debug|x64
+		{52882D1B-0CE3-4F6A-923E-CB22A56DA1B3}.Debug|x64.Build.0 = Debug|x64
+		{52882D1B-0CE3-4F6A-923E-CB22A56DA1B3}.Debug|x86.ActiveCfg = Debug|Win32
+		{52882D1B-0CE3-4F6A-923E-CB22A56DA1B3}.Debug|x86.Build.0 = Debug|Win32
+		{52882D1B-0CE3-4F6A-923E-CB22A56DA1B3}.Release|x64.ActiveCfg = Release|x64
+		{52882D1B-0CE3-4F6A-923E-CB22A56DA1B3}.Release|x64.Build.0 = Release|x64
+		{52882D1B-0CE3-4F6A-923E-CB22A56DA1B3}.Release|x86.ActiveCfg = Release|Win32
+		{52882D1B-0CE3-4F6A-923E-CB22A56DA1B3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

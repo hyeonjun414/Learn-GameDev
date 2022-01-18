@@ -55,6 +55,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A3-1.CPP복습1", "A3-1.CPP
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A3-2.함수포인터", "A3-2.함수포인터\A3-2.함수포인터.vcxproj", "{3A506480-F24E-47E5-9308-8BB14A53278E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A4-1.비트연산자", "A4-1.비트연산자\A4-1.비트연산자.vcxproj", "{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -271,6 +273,14 @@ Global
 		{3A506480-F24E-47E5-9308-8BB14A53278E}.Release|x64.Build.0 = Release|x64
 		{3A506480-F24E-47E5-9308-8BB14A53278E}.Release|x86.ActiveCfg = Release|Win32
 		{3A506480-F24E-47E5-9308-8BB14A53278E}.Release|x86.Build.0 = Release|Win32
+		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Debug|x64.ActiveCfg = Debug|x64
+		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Debug|x64.Build.0 = Debug|x64
+		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Debug|x86.ActiveCfg = Debug|Win32
+		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Debug|x86.Build.0 = Debug|Win32
+		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Release|x64.ActiveCfg = Release|x64
+		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Release|x64.Build.0 = Release|x64
+		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Release|x86.ActiveCfg = Release|Win32
+		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
