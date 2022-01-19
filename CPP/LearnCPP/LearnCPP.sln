@@ -57,6 +57,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A3-2.함수포인터", "A3-
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A4-1.비트연산자", "A4-1.비트연산자\A4-1.비트연산자.vcxproj", "{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A5-1.클래스복습", "A5-1.클래스복습\A5-1.클래스복습.vcxproj", "{58464004-FB88-4044-826A-52D3594AF944}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -281,6 +283,14 @@ Global
 		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Release|x64.Build.0 = Release|x64
 		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Release|x86.ActiveCfg = Release|Win32
 		{52C6B5A1-BF6D-405F-BC08-E82BEE6B2B80}.Release|x86.Build.0 = Release|Win32
+		{58464004-FB88-4044-826A-52D3594AF944}.Debug|x64.ActiveCfg = Debug|x64
+		{58464004-FB88-4044-826A-52D3594AF944}.Debug|x64.Build.0 = Debug|x64
+		{58464004-FB88-4044-826A-52D3594AF944}.Debug|x86.ActiveCfg = Debug|Win32
+		{58464004-FB88-4044-826A-52D3594AF944}.Debug|x86.Build.0 = Debug|Win32
+		{58464004-FB88-4044-826A-52D3594AF944}.Release|x64.ActiveCfg = Release|x64
+		{58464004-FB88-4044-826A-52D3594AF944}.Release|x64.Build.0 = Release|x64
+		{58464004-FB88-4044-826A-52D3594AF944}.Release|x86.ActiveCfg = Release|Win32
+		{58464004-FB88-4044-826A-52D3594AF944}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
