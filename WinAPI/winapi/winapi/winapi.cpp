@@ -21,6 +21,18 @@ typedef struct _tagBullet
     float fLimitDist; // 제한 거리
 }BULLET, * PBULLET;
 
+// 몬스터 구조체
+typedef struct _tagMonster {
+    RECTANGLE   tRC;
+    float       fSpeed; // 몬스터의 이동속도
+    float       fTime; // 도달 시간
+    float       fLimitTime; // 제한 시간
+    int         iDir; // 어느 방향으로 움직이는지. -1~1
+}MONSTER, * PMONSTER;
+
+// 몬스터 총알
+list<BULLET> g_MonsterBulletList;
+
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
