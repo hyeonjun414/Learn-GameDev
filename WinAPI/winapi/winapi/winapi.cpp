@@ -8,10 +8,19 @@
 using namespace std;
 #define MAX_LOADSTRING 100
 
+
+#pragma region 전역 변수, 함수, 구조체
+enum MOVE_DIR
+{
+    MD_BACK = -1,
+    MD_NONE,
+    MD_FRONT
+};
+
 typedef struct _tagRectangle
 {
     float l, t, r, b;
-}RECTANGLE, *PRECTANGLE;
+}RECTANGLE, * PRECTANGLE;
 
 // 총알 구조체
 typedef struct _tagBullet
@@ -42,7 +51,11 @@ HWND g_hWnd;
 HDC  g_hDC;
 bool g_bLoop = true;
 
-RECTANGLE g_tPlayerRC = { 100, 100, 200, 200 };
+
+RECTANGLE   g_tPlayerRC = { 100, 100, 200, 200 };
+MONSTER     g_tMonster;
+
+
 
 // 플레이어 총알
 list<BULLET> g_PlayerBulletList;
@@ -58,16 +71,14 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-#pragma region 전역 함수 부분
 void Run();
 #pragma endregion
 
-
-
+#pragma region wWinMain
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_ LPWSTR    lpCmdLine,
+    _In_ int       nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -80,7 +91,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MyRegisterClass(hInstance);
 
     // 애플리케이션 초기화를 수행합니다:
-    if (!InitInstance (hInstance, nCmdShow))
+    if (!InitInstance(hInstance, nCmdShow))
     {
         return FALSE;
     }
@@ -88,6 +99,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // 화면용 DC 생성
     g_hDC = GetDC(g_hWnd);
 
+    // 몬스터 초기화. 800*600 에서 가장 오른쪽에 위치시킨다.
+    g_tMonster.tRC.l = 800.f - 100.f;
+    g_tMonster.tRC.r = 800.f;
+    g_tMonster.tRC.t = 0.f;
+    g_tMonster.tRC.b = 100.f;
+    g_tMonster.fSpeed = 300.f;
+    g_tMonster.fTime = 0.f;
+    g_tMonster.fLimitTime = 2.f;
+    g_tMonster.iDir = MD_FRONT;
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINAPI));
 
@@ -99,7 +119,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // 기본 메시지 루프입니다:
     while (g_bLoop)
     {
-        if (PeekMessage(&msg, nullptr, 0,0, PM_REMOVE))
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
@@ -113,11 +133,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     ReleaseDC(g_hWnd, g_hDC);
 
-    return (int) msg.wParam;
+    return (int)msg.wParam;
 }
+#pragma endregion
 
-
-
+#pragma region MyRegisterClass
 //
 //  함수: MyRegisterClass()
 //
@@ -129,20 +149,23 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
     wcex.cbSize = sizeof(WNDCLASSEX);
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINAPI));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hInstance;
+    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINAPI));
+    wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = NULL;// MAKEINTRESOURCEW(IDC_WINAPI);
-    wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.lpszClassName = szWindowClass;
+    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
     return RegisterClassExW(&wcex);
 }
+#pragma endregion
+ 
+#pragma region InitInstance
 
 //
 //   함수: InitInstance(HINSTANCE, int)
@@ -156,34 +179,38 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
-   if (!hWnd)
-   {
-      return FALSE;
-   }
+    if (!hWnd)
+    {
+        return FALSE;
+    }
 
-   g_hWnd = hWnd; // 초기화 부분에 윈도우 핸들러를 넣어준다.
+    g_hWnd = hWnd; // 초기화 부분에 윈도우 핸들러를 넣어준다.
 
-   // 실제 윈도우 타이틀바나 메뉴를 포함한 윈도우의 크기를 구해준다.
-   RECT rc = { 0,0,800,600 };
-   AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+    // 실제 윈도우 타이틀바나 메뉴를 포함한 윈도우의 크기를 구해준다.
+    RECT rc = { 0,0,800,600 };
+    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
-   // 위에서 구해준 크기로 윈도우 클라이언트 영역의 크기를 원하는 크기로 맞춰줘야한다.
-   // HWND_TOPMOST : 창을 띄울때 최상단에 띄우는 옵션이다.
-   // SWP_NOMOVE : 해당 위치에서 움직이지 못하게 하는 옵션.
-   // SWP_NOZORDER : ZORDER에 관계없이 창을 출력한다.
-   SetWindowPos(hWnd, HWND_TOPMOST, 100, 100, rc.right - rc.left,
-       rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER);
+    // 위에서 구해준 크기로 윈도우 클라이언트 영역의 크기를 원하는 크기로 맞춰줘야한다.
+    // HWND_TOPMOST : 창을 띄울때 최상단에 띄우는 옵션이다.
+    // SWP_NOMOVE : 해당 위치에서 움직이지 못하게 하는 옵션.
+    // SWP_NOZORDER : ZORDER에 관계없이 창을 출력한다.
+    SetWindowPos(hWnd, HWND_TOPMOST, 100, 100, rc.right - rc.left,
+        rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER);
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+    ShowWindow(hWnd, nCmdShow);
+    UpdateWindow(hWnd);
 
-   return TRUE;
+    return TRUE;
 }
+
+#pragma endregion
+
+#pragma region WndProc
 
 //
 //  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -200,30 +227,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_COMMAND:
+    {
+        int wmId = LOWORD(wParam);
+        // 메뉴 선택을 구문 분석합니다:
+        switch (wmId)
         {
-            int wmId = LOWORD(wParam);
-            // 메뉴 선택을 구문 분석합니다:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
+        case IDM_ABOUT:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            break;
+        case IDM_EXIT:
+            DestroyWindow(hWnd);
+            break;
+        default:
+            return DefWindowProc(hWnd, message, wParam, lParam);
         }
-        break;
+    }
+    break;
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            EndPaint(hWnd, &ps);
-        }
-        break;
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+        // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+        EndPaint(hWnd, &ps);
+    }
+    break;
     case WM_DESTROY:
         g_bLoop = false;
         PostQuitMessage(0);
@@ -233,6 +260,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return 0;
 }
+
+#pragma endregion
+
+#pragma region About
+
 
 // 정보 대화 상자의 메시지 처리기입니다.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -253,6 +285,9 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
+#pragma endregion
+
+#pragma region 구현 부분
 
 void Run()
 {
@@ -321,7 +356,7 @@ void Run()
     }
     else if (g_tPlayerRC.r > rcWindow.right)
     {
-        g_tPlayerRC.l = rcWindow.right-100;
+        g_tPlayerRC.l = rcWindow.right - 100;
         g_tPlayerRC.r = rcWindow.right;
     }
 
@@ -332,7 +367,7 @@ void Run()
     }
     else if (g_tPlayerRC.b > rcWindow.bottom)
     {
-        g_tPlayerRC.t = rcWindow.bottom-100;
+        g_tPlayerRC.t = rcWindow.bottom - 100;
         g_tPlayerRC.b = rcWindow.bottom;
     }
 
@@ -359,7 +394,7 @@ void Run()
     fSpeed = 600.f * g_fDeltaTime * fTimeScale;
 
     // 플레이어 총알 이동
-    for (iter = g_PlayerBulletList.begin(); iter != iterEnd;) //++iter 제거
+    for (iter = g_PlayerBulletList.begin(); iter != g_PlayerBulletList.end();) //++iter 제거
     {
         (*iter).rc.l += fSpeed;
         (*iter).rc.r += fSpeed;
@@ -384,11 +419,88 @@ void Run()
             ++iter; //삭제가 안되면 정상적으로 반복자를 올려줌.
     }
 
+    for (iter = g_MonsterBulletList.begin(); iter != g_MonsterBulletList.end(); ++iter)
+    {
+        (*iter).rc.l -= fSpeed;
+        (*iter).rc.r -= fSpeed;
+        (*iter).fDist += fSpeed;
+
+        // 현재 거리가 최대 거리를 넘어가면 
+        if ((*iter).fDist >= (*iter).fLimitDist)
+        {
+            // erase하면 다음 iterator를 가져옴.
+            iter = g_MonsterBulletList.erase(iter);
+            iterEnd = g_MonsterBulletList.end();
+        }
+
+        // 화면 영역을 벗어나면
+        else if ((*iter).rc.l > 800)//rcWindow.right)
+        {
+            // erase하면 다음 iterator를 가져옴.
+            iter = g_MonsterBulletList.erase(iter);
+            iterEnd = g_MonsterBulletList.end();
+        }
+        else
+            ++iter; //삭제가 안되면 정상적으로 반복자를 올려줌.
+    }
+
+
+    // 몬스터 이동. iDir을 통해 이동하는 방향을 구해줌.
+    g_tMonster.tRC.t += g_tMonster.fSpeed * g_fDeltaTime * fTimeScale * g_tMonster.iDir;
+    g_tMonster.tRC.b += g_tMonster.fSpeed * g_fDeltaTime * fTimeScale * g_tMonster.iDir;
+
+    // 위아래 경계선에 닿을때마다 방향을 바꿔준다.
+    if (g_tMonster.tRC.b >= 600)
+    {
+        g_tMonster.iDir = MD_BACK;
+        g_tMonster.tRC.b = 600;
+        g_tMonster.tRC.t = 500;
+    }
+    else if (g_tMonster.tRC.t <= 0)
+    {
+        g_tMonster.iDir = MD_FRONT;
+        g_tMonster.tRC.b = 100;
+        g_tMonster.tRC.t = 0;
+    }
+
+    // 몬스터 총알 발사 로직
+    g_tMonster.fTime += g_fDeltaTime; // 시간누적
+
+    // 누적된 시간이 제한시간을 초과하면
+    if (g_tMonster.fTime >= g_tMonster.fLimitTime)
+    {
+        // 제한시간 만큼 다시 빼줌.
+        g_tMonster.fTime -= g_tMonster.fLimitTime;
+
+        // 총알은 몬스터의 왼쪽에 위치
+        BULLET tBullet;
+
+        tBullet.rc.r = g_tMonster.tRC.l;
+        tBullet.rc.l = g_tMonster.tRC.l - 50.f;
+        tBullet.rc.t = (g_tMonster.tRC.t + g_tMonster.tRC.b) / 2.f - 25.f;
+        tBullet.rc.b = (g_tMonster.tRC.t + g_tMonster.tRC.b) / 2.f + 25.f;
+        tBullet.fDist = 0.f; // 현재 거리는 0;
+        tBullet.fLimitDist = 800.f; // 최대 거리는 400;
+
+        g_MonsterBulletList.push_back(tBullet);
+    }
+
+    // 출력 부
     // 총알 출력
-    for (iter = g_PlayerBulletList.begin(); iter != iterEnd; ++iter)
+    for (iter = g_PlayerBulletList.begin(); iter != g_PlayerBulletList.end(); ++iter)
+    {
+        Rectangle(g_hDC, (*iter).rc.l, (*iter).rc.t, (*iter).rc.r, (*iter).rc.b);
+    }
+    for (iter = g_MonsterBulletList.begin(); iter != g_MonsterBulletList.end(); ++iter)
     {
         Rectangle(g_hDC, (*iter).rc.l, (*iter).rc.t, (*iter).rc.r, (*iter).rc.b);
     }
 
     Rectangle(g_hDC, g_tPlayerRC.l, g_tPlayerRC.t, g_tPlayerRC.r, g_tPlayerRC.b);
+
+    // 몬스터 사각형 출력
+    Rectangle(g_hDC, g_tMonster.tRC.l, g_tMonster.tRC.t, g_tMonster.tRC.r, g_tMonster.tRC.b);
 }
+#pragma endregion
+
+

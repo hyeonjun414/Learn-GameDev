@@ -40,30 +40,15 @@ bool isExist(vector<T> array, T i)
     return false;
 }
 
-template <typename T>
-T nMultipleRepeat(T x, int n)
-{
-    if (n == 1)
-        return x;
-    else if (n % 2 == 0)
-    {
-        return nMultipleRepeat(x, n / 2) *
-            nMultipleRepeat(x, n / 2);
-    }
-    else
-    {
-        return x * nMultipleRepeat(x, n / 2) *
-            nMultipleRepeat(x, n / 2);
-    }
-}
 
+// 5. 자연수 x의 n번 곱한 결과를 반환 하는 함수
 template <typename T>
-T power(T x, int y)
+T nMultipleRepeat(T x, int y)
 {
     T temp;
     if (y == 1)
         return x;
-    temp = power(x, y / 2);
+    temp = nMultipleRepeat(x, y / 2);
     if (y % 2 == 0)
         return temp * temp;
     else
@@ -79,7 +64,7 @@ int main()
 {
 #pragma region 실습
     vector<int> vec = { 1,5,4,3,3,6 };
-    vector<double> vec2 = { 1.8,2.1,4.2,3.4,3.8,2.5 };
+    vector<double> vec2 = { 1.8, 2.1, 4.2, 3.4, 3.8, 2.5 };
 
     timeCheck();
     cout << isExist(vec, 3) << endl;
@@ -87,11 +72,9 @@ int main()
     timeCheck();
     cout << isExist(vec2, 3.4) << endl;
     timeCheck();
+    cout << "5. 자연수 x의 n번 곱한 결과를 반환 하는 함수" << endl;
     timeCheck();
     cout << nMultipleRepeat(2.1, 10) << endl;
-    timeCheck();
-    timeCheck();
-    cout << power(2.1, 10) << endl;
     timeCheck();
 #pragma endregion
 
