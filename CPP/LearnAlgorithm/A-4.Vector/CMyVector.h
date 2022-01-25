@@ -47,7 +47,7 @@ CMyVector<T>::CMyVector()
 template<typename T>
 CMyVector<T>::~CMyVector()
 {
-	delete[] pData;
+	//delete[] pData;
 	m_size = 0;
 	m_capacity = 0;
 }
