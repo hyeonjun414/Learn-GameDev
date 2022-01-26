@@ -20,47 +20,55 @@ int main()
 	CMyList<int> myList;
 	cout << "push_front(15) -> ";
 	myList.push_front(15);
-	myList.print_AllNode();
+	myList.printAll();
 	cout << "push_back(10) -> ";
 	myList.push_back(10);
-	myList.print_AllNode();
+	myList.printAll();
 	cout << "push_back(20) -> ";
 	myList.push_back(20);
-	myList.print_AllNode();
+	myList.printAll();
 	cout << "push_back(30) -> ";
 	myList.push_back(30);
-	myList.print_AllNode();
+	myList.printAll();
 
 	// 인덱스 테스트
-	cout << myList[2] << endl;
+	cout << "myList[2] -> ";
+	cout << myList[2] << "\n\n";
 	// 복사생성자 테스트
+	cout << "myList 복사생성 -> ";
+
 	CMyList<int> myList2(myList);
-	myList2.print_AllNode();
-	myList.print_AllNode();
+	cout << "myList -> ";
+	myList.printAll();
+	cout << "myList2 -> ";
+	myList2.printAll();
+	cout << "myList = myList + myList2 -> ";
 	myList = myList + myList2;
-	myList.print_AllNode();
+	myList.printAll();
+	cout << "myList += myList2 ->";
 	myList += myList2;
-	myList.print_AllNode();
-	cout << "pop_back()    -> ";
+
+	myList.printAll();
+	cout << "pop_back() * 4    -> ";
 	myList.pop_back();
 	myList.pop_back();
 	myList.pop_back();
 	myList.pop_back();
-	myList.print_AllNode();
+	myList.printAll();
 	cout << "pop_front()   -> ";
 	myList.pop_front();
-	myList.print_AllNode();
+	myList.printAll();
 	cout << "push_front(100) -> ";
 	myList.push_front(100);
 	if (myList.empty())
 		cout << "빈 리스트입니다." << endl;
 	else
-		myList.print_AllNode();
+		myList.printAll();
 	cout << "myList.clear() 실행" << "\n\n";
 	myList.clear();
 	if (myList.empty())
 		cout << "빈 리스트입니다. size : " << myList.size() << endl;
 	else
-		myList.print_AllNode();
+		myList.printAll();
 	
 }
