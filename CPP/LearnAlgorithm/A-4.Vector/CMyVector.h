@@ -6,7 +6,7 @@ template <typename T>
 class CMyVector
 {
 private:
-	T* pData;
+	T* pDataArray;
 	unsigned int m_size; // 벡터의 사이즈
 	unsigned int m_capacity; // 현재 벡터의 저장소를 더 늘리지 않는 선에서 할당가능한 수.
 
@@ -39,7 +39,7 @@ public:
 template<typename T>
 CMyVector<T>::CMyVector()
 {
-	pData = new T[100];
+	pDataArray = new T[100];
 	m_size = 0;
 	m_capacity = 100;
 }
@@ -62,13 +62,13 @@ void CMyVector<T>::push_back(const T& data)
 		T* newData = new T[m_capacity * 2];
 		for (int i = 0; i < m_size; i++)
 		{
-			newData[i] = pData[i];
+			newData[i] = pDataArray[i];
 		}
-		delete[] pData;
-		pData = newData;
+		delete[] pDataArray;
+		pDataArray = newData;
 		m_capacity *= 2;
 	}
-	pData[m_size] = data;
+	pDataArray[m_size] = data;
 	m_size++;
 }
 
@@ -90,10 +90,10 @@ void CMyVector<T>::pop_back()
 		T* newData = new T[m_capacity / 2];
 		for (int i = 0; i < m_size; i++)
 		{
-			newData[i] = pData[i];
+			newData[i] = pDataArray[i];
 		}
-		delete[] pData;
-		pData = newData;
+		delete[] pDataArray;
+		pDataArray = newData;
 		m_capacity /= 2;
 	}
 }
@@ -118,7 +118,7 @@ T& CMyVector<T>::operator[](int index)
 		T* newDate = nullptr;
 		return *newDate;
 	}
-	return pData[index];
+	return pDataArray[index];
 }
 
 // 실습 1
@@ -130,7 +130,7 @@ T& CMyVector<T>::at(int index)
 		T* newDate = nullptr;
 		return *newDate;
 	}
-	return pData[index];
+	return pDataArray[index];
 }
 
 // 실습 3
@@ -144,8 +144,8 @@ T& CMyVector<T>::operator=(CMyVector& right)
 	{
 		newData[i] = right[i];
 	}
-	delete[] pData;
-	this->pData = newData;
+	delete[] pDataArray;
+	this->pDataArray = newData;
 	this->m_size = right.size();
 	this->m_capacity = right.capacity();
 
@@ -155,7 +155,7 @@ T& CMyVector<T>::operator=(CMyVector& right)
 template<typename T>
 bool CMyVector<T>::operator==(CMyVector& right)
 {
-	if(this->pData == right.pData)
+	if(this->pDataArray == right.pDataArray)
 		return true;
 	return false;
 }
