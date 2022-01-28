@@ -1,3 +1,4 @@
+#include "..\A-7.Iterator(List)\CMyList.h"
 #pragma once
 
 #include<assert.h>
@@ -50,19 +51,26 @@ public:
 		iterator	operator--(int);
 		bool		operator==(const iterator& _other);
 		bool		operator!=(const iterator& _other);
+		iterator&	operator=(const iterator& _other);
+
 
 	};
 	iterator begin();
 	iterator end();
+
+
+	// +a 개인공부
+	void insert(const iterator& iter, const T& value);
+	void erase(const iterator& iter);
 	
 };
 
 template<typename T>
 CMyVector<T>::CMyVector()
 {
-	pDataArray = new T[100];
+	pDataArray = new T[5];
 	m_size = 0;
-	m_capacity = 100;
+	m_capacity = 5;
 }
 
 template<typename T>
@@ -308,9 +316,19 @@ bool CMyVector<T>::iterator::operator!=(const iterator& _other)
 }
 
 template<typename T>
+typename CMyVector<T>::iterator& CMyVector<T>::iterator::operator=(const iterator& _other)
+{
+	this->pVector = _other.pVector;
+	this->pData = _other.pData;
+	this->m_index = _other.m_index;
+
+	return *this;
+}
+
+template<typename T>
 typename CMyVector<T>::iterator CMyVector<T>::begin()
 {
-	iterator newIter(this, this->pDataArray, 0);
+	iterator newIter(this, this->pDataArray, m_size == 0 ? -1 : 0);
 	return newIter;
 }
 
@@ -319,4 +337,65 @@ typename CMyVector<T>::iterator CMyVector<T>::end()
 {
 	iterator newIter(this, this->pDataArray, -1);
 	return newIter;
+}
+
+template<typename T>
+void CMyVector<T>::insert(const iterator& iter, const T& value)
+{
+	// 1. 벡터의 크기를 확인한다.
+	// 1-1. 벡터의 크기가 용량을 넘어서면 배열을 재할당해준다.
+	// 2. m_index까지 한칸씩 배열을 미뤄주며 재배치한다..
+	// 3. iterator의 데이터를 m_index 인덱스에 넣어준다. 
+	// 4. 데이터가 추가되었으므로 크기를 하나 늘려준다.
+	// 
+	//if (m_size >= m_capacity)
+	//{
+	//	if (0 == m_capacity)
+	//		m_capacity = 1;
+	//	T* newData = new T[m_capacity * 2];
+	//	for (int i = 0; i < m_size; i++)
+	//	{
+	//		newData[i] = pDataArray[i];
+	//	}
+	//	delete[] pDataArray;
+	//	pDataArray = newData;
+	//	m_capacity *= 2;
+	//}
+	push_back(0);
+
+	for (int i = m_size; i > iter.m_index; --i)
+	{
+		pDataArray[i] = pDataArray[i - 1];
+	}
+	pDataArray[iter.m_index] = value;
+	//m_size++;
+}
+
+template<typename T>
+void CMyVector<T>::erase(const iterator& iter)
+{
+	//1. push_back(0);
+	//2. 만약에 data가 처음부터 없을때 pop_back();
+	// size == 0
+	if (m_size == 0)
+		return;
+	//pData[size-1] = NULL;
+	// 뒤에 데이터가 들어있지만 모든 연산을 size까지만 조절한다면
+	// 값을 무시해도 상관없다.
+	for (int i = iter.m_index; i < m_size-1; i++)
+	{
+		pDataArray[i] = pDataArray[i + 1];
+	}
+	m_size -= 1;
+	if (m_size <= m_capacity / 2)
+	{
+		T* newData = new T[m_capacity / 2];
+		for (int i = 0; i < m_size; i++)
+		{
+			newData[i] = pDataArray[i];
+		}
+		delete[] pDataArray;
+		pDataArray = newData;
+		m_capacity /= 2;
+	}
 }

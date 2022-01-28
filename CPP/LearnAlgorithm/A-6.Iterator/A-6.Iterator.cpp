@@ -94,13 +94,44 @@ int main()
 	cout << "iter != iter : " << (iter != iter) << endl;
 	cout << "iter == iter++ : " << (iter == iter++) << endl;
 	cout << "iter != iter++ : " << (iter != iter++) << endl;
-
+	myVector.insert(iter, 10);
+	myVector.insert(iter, 10);
+	myVector.insert(iter, 10);
+	myVector.insert(iter, 10);
+	myVector.insert(iter, 10);
+	myVector.insert(iter, 10);
+	myVector.insert(iter, 10);
+	myVector.insert(iter, 10);
+	myVector.insert(iter, 10);
+	myVector.insert(iter, 10);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
+	myVector.erase(iter);
 	cout << "myVector Data : ";
 	for (iter=myVector.begin(); iter != myVector.end(); iter++)
 	{
 		cout << *iter << ", ";
 	}
 	cout << endl;
-
-
+	myVector.insert(iter, 10);
+	CMyVector<int>::iterator iter2 = iter;
+	cout << "iter == iter2 : " << (iter == iter2) << endl;
 }
