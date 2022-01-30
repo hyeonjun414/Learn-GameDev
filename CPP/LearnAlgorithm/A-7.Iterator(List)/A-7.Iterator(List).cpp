@@ -83,7 +83,7 @@ int main()
 	myList.insert(iter, 150);
 	myList.erase(iter);
 
-	for (iter = myList.begin(); iter != myList.end(); iter++)
+   	for (iter = myList.begin(); iter != myList.end(); iter++)
 	{
 		cout << *iter << ", ";
 	}
