@@ -1,7 +1,8 @@
 ﻿// Astar.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
 //
 //1. P = 시작점
-//2. P에 f, g, h 할당
+//2. P에 f, g, h 할당 g(출발점부터 현재 노드 위치까지의 거리), h(현재 노드 위치부터, 목표점까지의 휴리스틱한 거리)
+//   f(g+h).
 //3. Open 리스트에 P 넣기
 //4. B = Open 리스트에서 가장 낮은 f 값을 가진 노드
 //a. B가 목표점이면, 경로 완성
@@ -13,6 +14,8 @@
 //2. 없으면, C를 Open 리스트에 넣기
 //c. 5번으로 돌아가서 B에 연결된 모든 노드를 대상으로 진행
 //6. 4번으로 돌아감
+
+
 #include <iostream>
 #include <list>
 #include <algorithm>
@@ -32,7 +35,7 @@ char map[7][5] = {
 
 class ASNode {
 public:
-	ASNode* conn; // 실제 패스에 연결되는 노드
+	ASNode* conn; // 다음에 연결되는 하위 노드
 	int row, col; // 해당 노드의 맵 인덱스
 	int g, h, f;
 	char nodeName; // 특수한 노드의 이름
@@ -61,6 +64,7 @@ list<ASNode*> closeList;
 
 tuple<int, int> GetGoalIndex()
 {
+	// 맵의 행열 크기를 구한다.
 	int maxMapSizeRow = sizeof(map) / sizeof(map[0]);
 	int maxMapSizeCol = sizeof(map[0]);
 
@@ -68,6 +72,7 @@ tuple<int, int> GetGoalIndex()
 	{
 		for (int j = 0; j < maxMapSizeCol; j++)
 		{
+			// 해당하는 인덱스를 튜플로 반환하여 행, 열 정보를 반환한다.
 			if (map[i][j] == 'G')
 			{
 				return make_tuple(i, j);
@@ -77,6 +82,7 @@ tuple<int, int> GetGoalIndex()
 }
 void DebugPrintList(list<ASNode*>& nodelist, string name)
 {
+	// 경로를 표기.
 	cout << name.c_str() << ":" << endl;
 	//cout << "list length:" << nodelist.size() << endl;
 	for (auto& ele : nodelist)
@@ -88,6 +94,7 @@ void DebugPrintList(list<ASNode*>& nodelist, string name)
 
 void ShowMap()
 {
+	// 맵을 출력
 	int maxMapSizeRow = sizeof(map) / sizeof(map[0]);
 	int maxMapSizeCol = sizeof(map[0]);
 
@@ -105,6 +112,8 @@ void ShowMap()
 
 void FindPath()
 {
+	// 길찾기 기능
+
 	//DebugPrintList(openList, "Open");
 	//DebugPrintList(closeList, "Close");
 	int maxMapSizeRow = sizeof(map) / sizeof(map[0]);
@@ -112,6 +121,7 @@ void FindPath()
 
 	//cout << "maxMapSizeRow:" << maxMapSizeRow << ", maxMapSizeCol:" << maxMapSizeCol <<endl;
 
+	// 시작 노드가 없다면 함수 중지.
 	if (openList.size() == 0)
 	{
 		//end of finding.  no route to goal
@@ -119,9 +129,13 @@ void FindPath()
 		return;
 	}
 
+	// 빈 노드를 하나 생성.
 	ASNode* openNode = nullptr;
 
+
 	int smallest_f = 10000;
+	// 오픈 리스트를 탐지하여 f값이 가장 작은 노드를 현재 노드로 만든다.
+	// f값은 출발점부터 현재노드의 거리와 현재 노드에서 목표점까지의 거리의 합이다.
 	for (auto& op : openList)
 	{
 		if (op->f < smallest_f)
@@ -131,8 +145,10 @@ void FindPath()
 		}
 	}
 
+	// 노드가 존재할때 실행
 	if (openNode != nullptr)
 	{
+		// 만약 이번 노드가 목표점이라면 경로를 보여주고 맵에 표시를 한다.
 		if (openNode->nodeName == 'G') //arrive at Goal
 		{
 			cout << "< Optimal Path (row, column)>" << endl;
@@ -149,25 +165,31 @@ void FindPath()
 					cout << "<==";
 			}
 
+			// 마지막으로 맵을 보여준다.
 			ShowMap();
 		}
 		else
 		{
+			// 현재 노드에서 다음 노드를 탐색한다.
 			//Get children nodes from the current node
 			//check 4-way, up,down,left,right
+			// 현재 노드의 인덱스를 구한다.
 			int rowInd = openNode->row;
 			int colInd = openNode->col;
 
 			//check up
 			ASNode* childNode;
+			// 현재 노드의 왼쪽 검사
 			if (openNode->row - 1 >= 0)
 			{
 				int childIndRow = openNode->row - 1;
 				int childIndCol = openNode->col;
 
+				// 왼쪽의 노드를 가져옴
 				childNode = GetChildNodes(childIndRow, childIndCol, openNode);
 			}
 
+			// 오른쪽 검사
 			if (openNode->row + 1 < maxMapSizeRow)
 			{
 				int childIndRow = openNode->row + 1;
@@ -176,6 +198,7 @@ void FindPath()
 				childNode = GetChildNodes(childIndRow, childIndCol, openNode);
 			}
 
+			// 아래쪽 검사
 			if (openNode->col + 1 < maxMapSizeCol)
 			{
 				int childIndRow = openNode->row;
@@ -184,6 +207,7 @@ void FindPath()
 				childNode = GetChildNodes(childIndRow, childIndCol, openNode);
 			}
 
+			// 위쪽 검사
 			if (openNode->col - 1 >= 0)
 			{
 				int childIndRow = openNode->row;
@@ -193,6 +217,8 @@ void FindPath()
 			}
 
 			//cout << "[Remove from openlist] (" << rowInd << "," << colInd << ")" << endl;
+
+			// 현재 노드를 오픈리스트에서 제거하고 클로즈리스트에 추가하여 검사를 마쳤다는 것을 확인한다.
 			openList.remove_if([&](ASNode* node)
 				{
 					if (node->row == rowInd && node->col == colInd)
@@ -208,13 +234,16 @@ void FindPath()
 			//cout << "[push] to closeList:" << rowInd << "," << openNode->col << endl;
 			closeList.push_back(openNode);
 
+			// 다음 길찾기를 수행한다.
 			FindPath();
 		}
 	}
 }
 
+// 하위 노드 찾는 함수
 ASNode* GetChildNodes(int childIndRow, int childIndCol, ASNode* parentNode)
 {
+	// 오픈리스트에서 하위 노드를 가져온다.
 	auto it_open = find_if(openList.begin(), openList.end(), [&](ASNode* node)
 		{
 			if (node->row == childIndRow && node->col == childIndCol)
@@ -227,6 +256,7 @@ ASNode* GetChildNodes(int childIndRow, int childIndCol, ASNode* parentNode)
 			}
 		});
 
+	// 클로즈리스트에서 하위 노드를 가져온다.
 	auto it_close = find_if(closeList.begin(), closeList.end(), [&](ASNode* node)
 		{
 			if (node->row == childIndRow && node->col == childIndCol)
@@ -239,6 +269,7 @@ ASNode* GetChildNodes(int childIndRow, int childIndCol, ASNode* parentNode)
 			}
 		});
 
+	// 오픈리스트에서 하위 노드를 찾지 못했다면
 	if (it_open != openList.end())
 	{
 		//exist
@@ -322,13 +353,16 @@ int main()
 {
 	ShowMap();
 
+	// 시작지점 노드의 인덱스를 지정
 	int startRowInd = 3;
 	int startColInd = 3;
 
+	// 지정한 인덱스로 시작 지점 노드를 생성.
 	ASNode* startNode = new ASNode(startRowInd, startColInd, 'S', 'S');
 
-	//put open list first
+	// 오픈 리스트의 첫번째로 시작 노드를 생성.
 	openList.push_back(startNode);
 
+	// 길찾기 함수 실행.
 	FindPath();
 }
