@@ -79,7 +79,6 @@ public:
 		bool		operator!=(const iterator& _other);
 		iterator& operator=(const iterator& _other);
 
-
 	};
 	iterator begin();
 	iterator end();

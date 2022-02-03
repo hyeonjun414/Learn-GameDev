@@ -120,10 +120,12 @@ void CMyList<T>::pop_back()
 	// 2. 끝 노드를 메모리 해제한다.
 	// 3. 새로운 노드를 리스트의 끝 노드로 지정한다.
 	Node<T>* newTailNode = pTailNode->pPrev;
+	//newTailNode->pNext = nullptr;
 	delete pTailNode;
 	pTailNode = newTailNode;
 	// 리스트 크기를 하나 줄여준다.
 	m_size--;
+	//pTailNode->pNext = nullptr;
 }
 
 template<typename T>
@@ -166,6 +168,7 @@ void CMyList<T>::pop_front()
 	pHeadNode = newHeadNode;
 	// 리스트의 크기를 감소시킨다.
 	m_size--;
+	//pHeadNode->pPrev = nullptr;
 }
 
 template<typename T>
