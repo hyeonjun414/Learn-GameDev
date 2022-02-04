@@ -18,10 +18,16 @@ int main()
 
 	CMyBST<int>::iterator iter = myBST.begin();
 	CMyBST<int>::iterator iterEnd = myBST.end();
-	for (iter = myBST.begin(); iter != iterEnd; ++iter)
-	{
-		cout << *iter << ", ";
-	}
-	cout << endl;
-	cout << *--iter <<endl;
+	iter = myBST.erase(iter);
+	iter = myBST.erase(iter);
+	iter = myBST.erase(iter);
+	myBST.printAll();
+	iter = myBST.erase(iter);
+	iter = myBST.erase(iter);
+	myBST.printAll();
+	//for (iter = myBST.begin(); iter != iterEnd;)
+	//{
+	//	iter = myBST.erase(iter);
+	//}
+
 }
