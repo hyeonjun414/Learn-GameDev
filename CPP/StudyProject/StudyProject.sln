@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Astar", "Astar\Astar.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyAstar", "MyAstar\MyAstar.vcxproj", "{FC2EF09A-F628-4D67-B9F3-B3EE711FB630}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graph", "Graph\Graph.vcxproj", "{A8D29A76-A654-443C-89F0-2BED86A5A4F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{FC2EF09A-F628-4D67-B9F3-B3EE711FB630}.Release|x64.Build.0 = Release|x64
 		{FC2EF09A-F628-4D67-B9F3-B3EE711FB630}.Release|x86.ActiveCfg = Release|Win32
 		{FC2EF09A-F628-4D67-B9F3-B3EE711FB630}.Release|x86.Build.0 = Release|Win32
+		{A8D29A76-A654-443C-89F0-2BED86A5A4F8}.Debug|x64.ActiveCfg = Debug|x64
+		{A8D29A76-A654-443C-89F0-2BED86A5A4F8}.Debug|x64.Build.0 = Debug|x64
+		{A8D29A76-A654-443C-89F0-2BED86A5A4F8}.Debug|x86.ActiveCfg = Debug|Win32
+		{A8D29A76-A654-443C-89F0-2BED86A5A4F8}.Debug|x86.Build.0 = Debug|Win32
+		{A8D29A76-A654-443C-89F0-2BED86A5A4F8}.Release|x64.ActiveCfg = Release|x64
+		{A8D29A76-A654-443C-89F0-2BED86A5A4F8}.Release|x64.Build.0 = Release|x64
+		{A8D29A76-A654-443C-89F0-2BED86A5A4F8}.Release|x86.ActiveCfg = Release|Win32
+		{A8D29A76-A654-443C-89F0-2BED86A5A4F8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
