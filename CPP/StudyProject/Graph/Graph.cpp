@@ -27,9 +27,42 @@
 //
 #include <iostream>
 
+#include <vector>
+
 using namespace std;
 
-int main()
-{
-    std::cout << "Hello World!\n";
+const int MAX = 1050;
+int n, m;
+vector<int> v[MAX];
+bool check_dfs[MAX];
+
+//DFS Search
+void DFS(int index) {
+    check_dfs[index] = true; //정점 방문 체크
+    printf("%d ", index); //방문한 정점 출력
+
+    for (int i = 0; i < v[index].size(); i++) {
+        int next = v[index][i];
+
+        if (!check_dfs[next]) { //방문하지 않았다면 DFS() 호출
+            DFS(next);
+        }
+    }
+}
+
+int main() {
+
+    cin >> n >> m;
+    //그래프 노드관계 입력
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+
+        v[a].push_back(b);
+        v[b].push_back(a);
+    }
+
+    DFS(0);
+
+    return 0;
 }
