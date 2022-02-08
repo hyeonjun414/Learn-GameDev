@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{64c64f92-e7fd-4622-acc7-1c477376d218}</ProjectGuid>
-    <RootNamespace>B1Sort</RootNamespace>
+    <ProjectGuid>{d136ee6d-5de3-4f5b-960c-44cbd93fb65d}</ProjectGuid>
+    <RootNamespace>B3Dijkstra</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>B-1.Sort</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -140,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="B-1. Sort.cpp" />
+    <ClCompile Include="B-3.Dijkstra.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
