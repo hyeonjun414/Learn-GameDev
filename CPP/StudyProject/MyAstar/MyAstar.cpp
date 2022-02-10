@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <list>
+#include <vector>
 #include <tuple>
 
 using namespace std;
@@ -39,11 +40,24 @@ using namespace std;
 char map[MAP_SIZE][MAP_SIZE] = {
 	{'G', '0', '1', '1', '1','1', '1' },
 	{'1', '0', '1', '0', '1','0', '1' },
-	{'1', '1', '1', '0', '1','0', '1' },
+	{'1', '1', '0', '0', '1','0', '1' },
 	{'1', '1', '0', '0', '1','S', '1' },
 	{'1', '1', '1', '1', '1','1', '1' },
 	{'1', '1', '0', '1', '1','1', '1' },
 	{'1', '1', '1', '1', '1','1', '1' }
+};
+
+// 현재 노드를 기준에서 여덟 방향을 확인하는 좌표를 담아둔 벡터.
+vector<pair<int, int>> dir =
+{
+	{-1,-1}, // 좌상단
+	{-1, 0}, // 상단
+	{-1, 1}, // 우상단
+	{ 0,-1}, // 좌측
+	{ 0, 1}, // 우측
+	{ 1,-1}, // 좌하단
+	{ 1, 0}, // 하단
+	{ 1, 1}  // 우하단
 };
 
 struct Node
@@ -107,7 +121,17 @@ void debugPrintList(list<Node*>& nodeList, string name)
 	cout << endl;
 }
 
-Node* createNodeByIndex(int Index_Y, int Index_X, Node* parentNode)
+int getH(tuple<int, int> start, tuple<int, int> end)
+{
+	int xSize = abs(get<1>(start) - get<1>(end));
+	int ySize = abs(get<0>(start) - get<0>(end));
+	int line = abs(xSize - ySize);
+	int cross = xSize > ySize ? xSize - line : ySize - line;
+
+	return 10 * line + 14 * cross;
+}
+
+Node* createNodeByIndex(int Index_Y, int Index_X, Node* parentNode, int add_g)
 {
 	char val = map[Index_Y][Index_X];
 	// 만약 만든 노드가 지나갈 수 없는 곳이라면 nullptr을 반환.
@@ -121,7 +145,7 @@ Node* createNodeByIndex(int Index_Y, int Index_X, Node* parentNode)
 	if (val == 'G')
 	{
 		node = new Node(Index_Y, Index_X, 'G', 'G');
-		node->g = parentNode->g + 1;
+		node->g = parentNode->g + add_g;
 		node->h = 0;
 		node->f = node->g;
 		node->pParent = parentNode;
@@ -130,22 +154,22 @@ Node* createNodeByIndex(int Index_Y, int Index_X, Node* parentNode)
 	else
 	{
 		node = new Node(Index_Y, Index_X, val, uniqueName++);
-		node->g = parentNode->g + 1; // g값을 증가시켜줌
+		node->g = parentNode->g + add_g; // g값을 증가시켜줌
 
 		// 목적지의 인덱스를 가져와서 
 		auto inds = getGoalIndex();
 		int goalRowInd = get<0>(inds);
 		int goalColInd = get<1>(inds);
-
+		
 		// 휴리스틱 측정치를 적용한다.
-		int h = abs(goalRowInd - Index_Y) + abs(goalColInd - Index_X);
-		node->h = h;
-		node->f = node->g + h;
+		//int h = getH(abs(goalRowInd - Index_Y) + abs(goalColInd - Index_X);
+		node->h = getH(inds, make_tuple(Index_Y, Index_X));
+		node->f = node->g + node->h;
 		node->pParent = parentNode;
 	}
 }
 
-Node* getChildNodes(int childIndex_Y, int childIndex_X, Node* parentNode)
+Node* getChildNodes(int childIndex_Y, int childIndex_X, Node* parentNode, int add_g)
 {
 	
 	// 오픈리스트에서 하위 노드를 가져온다.
@@ -163,9 +187,9 @@ Node* getChildNodes(int childIndex_Y, int childIndex_X, Node* parentNode)
 	if (it_open != openList.end())
 	{
 		//exist
-		if ((*it_open)->g < parentNode->g + 1)
+		if ((*it_open)->g < parentNode->g + add_g)
 		{
-			(*it_open)->g = parentNode->g + 1;
+			(*it_open)->g = parentNode->g + add_g;
 			parentNode->pParent = (*it_open);
 			(*it_open)->f = (*it_open)->g + (*it_open)->h;
 
@@ -178,9 +202,9 @@ Node* getChildNodes(int childIndex_Y, int childIndex_X, Node* parentNode)
 	else if (it_close != closeList.end())
 	{
 		//exist
-		if ((*it_close)->g < parentNode->g + 1)
+		if ((*it_close)->g < parentNode->g + add_g)
 		{
-			(*it_close)->g = parentNode->g + 1;
+			(*it_close)->g = parentNode->g + add_g;
 			parentNode->pParent = (*it_close);
 			(*it_close)->f = (*it_close)->g + (*it_close)->h;
 			/*	cout << "[parenting closelist]";
@@ -192,7 +216,7 @@ Node* getChildNodes(int childIndex_Y, int childIndex_X, Node* parentNode)
 	else
 	{
 		// 새로운 노드를 생성한다.
-		Node* newNode = createNodeByIndex(childIndex_Y, childIndex_X, parentNode);
+		Node* newNode = createNodeByIndex(childIndex_Y, childIndex_X, parentNode, add_g);
 
 		// 노드가 성공적으로 생성되었다면 
 		if (newNode != nullptr)
@@ -278,39 +302,18 @@ void Astar()
 
 			Node* childNode;
 
-
-			// 위쪽 노드 범위 검사
-			if (openNode->y - 1 >= 0)
+			for (int i = 0; i < dir.size(); i++)
 			{
-				int childIndexY = openNode->y - 1;
-				int childIndexX = openNode->x;
-
-				// 위쪽 노드를 가져옴
-				childNode = getChildNodes(childIndexY, childIndexX, openNode);
-			}
-			// 아래쪽 노드 범위 검사
-			if (openNode->y + 1 < MAP_SIZE)
-			{
-				int childIndexY = openNode->y + 1;
-				int childIndexX = openNode->x;
-
-				childNode = getChildNodes(childIndexY, childIndexX, openNode);
-			}
-			// 오른쪽 노드 범위 검사
-			if (openNode->x + 1 < MAP_SIZE)
-			{
-				int childIndexY = openNode->y;
-				int childIndexX = openNode->x+1;
-
-				childNode = getChildNodes(childIndexY, childIndexX, openNode);
-			}
-			// 왼쪽 노드 범위 검사
-			if (openNode->x - 1 >= 0)
-			{
-				int childIndexY = openNode->y;
-				int childIndexX = openNode->x - 1;
-
-				childNode = getChildNodes(childIndexY, childIndexX, openNode);
+				if (openNode->y + dir[i].first >= 0 &&
+					openNode->y + dir[i].first < MAP_SIZE &&
+					openNode->x + dir[i].second < MAP_SIZE &&
+					openNode->x + dir[i].second >= 0)
+				{
+					int childIndexY = openNode->y + dir[i].first;
+					int childIndexX = openNode->x + dir[i].second;
+					int add_g = dir[i].first != 0 && dir[i].second != 0 ? 14 : 10;
+					childNode = getChildNodes(childIndexY, childIndexX, openNode, add_g);
+				}
 			}
 
 			// 현재 노드를 오픈리스트에서 제거하고 
