@@ -27,320 +27,325 @@
 //		7) 위의 작업을 반복하며 열린목록에 없는 정점을 추가를, 있던 정점을 갱신을 해준다.
 //		8) 최종적으로 열린 목록 중 닫힌 목록에 추가되는 정점이 목적지라면 알고리즘은 종료된다.
 //		9) 닫힌 목록의 목적지 노드를 추적하여 올라가면 경로가 나오게 된다.
-
 #include <iostream>
 #include <list>
 #include <vector>
-#include <tuple>
+
+#define INF		99999
+#define MAP_SIZE 7
 
 using namespace std;
 
-#define MAP_SIZE 7
+/// 1: walkable
+/// 0: not walkable
 
-char map[MAP_SIZE][MAP_SIZE] = {
-	{'G', '0', '1', '1', '1','1', '1' },
-	{'1', '0', '1', '0', '1','0', '1' },
-	{'1', '1', '0', '0', '1','0', '1' },
-	{'1', '1', '0', '0', '1','S', '1' },
-	{'1', '1', '1', '1', '1','1', '1' },
-	{'1', '1', '0', '1', '1','1', '1' },
-	{'1', '1', '1', '1', '1','1', '1' }
+//bool map[MAP_SIZE][MAP_SIZE]
+//{
+//	{1,0,1},
+//	{1,0,1},
+//	{1,1,1}
+//};
+
+bool map[MAP_SIZE][MAP_SIZE] = {
+	{1, 0, 1, 1, 1, 1, 1 },
+	{1, 0, 1, 0, 1, 0, 1 },
+	{1, 1, 1, 0, 1, 0, 1 },
+	{1, 1, 0, 1, 1, 0, 1 },
+	{1, 1, 1, 1, 1, 0, 0 },
+	{1, 1, 0, 1, 1, 1, 1 },
+	{1, 1, 1, 1, 1, 0, 1 }
 };
 
 // 현재 노드를 기준에서 여덟 방향을 확인하는 좌표를 담아둔 벡터.
 vector<pair<int, int>> dir =
 {
-	{-1,-1}, // 좌상단
+	// 4방향
 	{-1, 0}, // 상단
-	{-1, 1}, // 우상단
+	{ 1, 0}, // 하단
 	{ 0,-1}, // 좌측
 	{ 0, 1}, // 우측
+
+	// 8방향
+	{-1,-1}, // 좌상단
+	{-1, 1}, // 우상단
 	{ 1,-1}, // 좌하단
-	{ 1, 0}, // 하단
 	{ 1, 1}  // 우하단
 };
 
-struct Node
-{
-	Node* pParent; // 지나온 부모 정점
-	int x, y; // 해당 정점의 맵 인덱스
-	int g, h, f;
-	char nodeName; // 특수한 노드의 이름
-	char value;
 
-	Node(int y, int x, char v, int i)
+
+struct Point
+{
+	int X;
+	int Y;
+
+	Point()
 	{
-		this->y = y;
-		this->x = x;
-		this->value = v;
-		this->nodeName = i;
-		this->g = 0;
-		this->h = 0;
-		this->f = 0;
-		this->pParent = nullptr;
+		X = -1;
+		Y = -1;
+	}
+
+	Point(int X, int Y)
+	{
+		this->X = X;
+		this->Y = Y;
+	}
+
+	Point operator=(const Point& point)
+	{
+		this->X = point.X;
+		this->Y = point.Y;
+		return *this;
+	}
+
+	bool operator==(const Point& other)
+	{
+		return (this->X == other.X) && (this->Y == other.Y);
 	}
 };
 
-static char uniqueName = 'a';
-
-list<Node*> openList;
-list<Node*> closeList;
-
-tuple<int, int> getGoalIndex()
+struct ASNode
 {
-	for (int i = 0; i < MAP_SIZE; i++)
+	ASNode* pParent;
+	Point		point;		// 좌표상 위치
+	int			g, h, f;	// g : 이동했던 거리
+							// h : 목표까지의 거리 (장애물 무시)
+							// f : g + h (전체 가중치)
+	ASNode()
 	{
-		for (int j = 0; j < MAP_SIZE; j++)
-		{
-			if (map[i][j] == 'G')
-				return make_tuple(i, j);
-		}
+		pParent = nullptr;
+		point = Point(-1, -1);
+		g = INF;
+		h = INF;
+		f = INF;
 	}
-}
-tuple<int, int> getStartIndex()
-{
-	for (int i = 0; i < MAP_SIZE; i++)
+	ASNode(ASNode* pParent, Point point, int g, int h)
 	{
-		for (int j = 0; j < MAP_SIZE; j++)
-		{
-			if (map[i][j] == 'S')
-				return make_tuple(i, j);
-		}
+		this->pParent = pParent;
+		this->point = point;
+		this->g = g;
+		this->h = h;
+		this->f = g + h;
 	}
+};
+// 4방향, 길이 최소 하나, 길이 최소 두개, 조건없는 8방향
+enum class MODE { Normal4, Half8, Both8, None8};
+
+// 해당 좌표의 정점이 리스트에 존재하는지 확인하는 함수
+list<ASNode>::iterator getNodeFromList(list<ASNode>& _list, Point point)
+{
+	list<ASNode>::iterator iter = _list.begin();
+	for (; iter != _list.end(); iter++)
+	{
+		if ((*iter).point == point)
+			break;
+	}
+	return iter;
 }
 
-void debugPrintList(list<Node*>& nodeList, string name)
+// 한 정점을 기준으로 도착점까지의 h값을 추산하여 반환하는 함수
+int getH(Point start, Point end)
 {
-	// 경로를 표기.
-	cout << name.c_str() << ":" << endl;
-	//cout << "list length:" << nodelist.size() << endl;
-	for (auto& ele : nodeList)
-	{
-		cout << "(" << ele->y << "," << ele->x << ")";
-	}
-	cout << endl;
-}
-
-int getH(tuple<int, int> start, tuple<int, int> end)
-{
-	int xSize = abs(get<1>(start) - get<1>(end));
-	int ySize = abs(get<0>(start) - get<0>(end));
+	int xSize = abs(start.X - end.Y);
+	int ySize = abs(start.Y - end.Y);
 	int line = abs(xSize - ySize);
 	int cross = xSize > ySize ? xSize - line : ySize - line;
 
 	return 10 * line + 14 * cross;
 }
 
-Node* createNodeByIndex(int Index_Y, int Index_X, Node* parentNode, int add_g)
+// 오픈 리스트에서 f값이 가장 작은 정점을 반환하는 함수
+// 오픈 리스트에 있는 정점들은 아직 주변 정점을 확인하지 않은 정점들이다.
+ASNode* nodeWithLowestF(list<ASNode>& openList)
 {
-	char val = map[Index_Y][Index_X];
-	// 만약 만든 노드가 지나갈 수 없는 곳이라면 nullptr을 반환.
-	if (val == '0')
-		return nullptr;
-
-	// 빈 노드 생성
-	Node* node = nullptr;
-
-	// 이번 노드가 목적지라면
-	if (val == 'G')
+	ASNode* tempNode = new ASNode();
+	int minF = INF;
+	int minH = INF;
+	for (list<ASNode>::iterator iter = openList.begin(); iter != openList.end(); iter++)
 	{
-		node = new Node(Index_Y, Index_X, 'G', 'G');
-		node->g = parentNode->g + add_g;
-		node->h = 0;
-		node->f = node->g;
-		node->pParent = parentNode;
+		// f뿐만이 아니라 h값도 비교하는 이유는
+		// f값이 같은 최단 경로중 가장 목적이에 근접해 있는 정점을 먼저 탐지하기 위해서이다.
+		if ((*iter).f < minF || ((*iter).f == minF && (*iter).h < minH))
+		{
+			minF = (*iter).f;
+			minH = (*iter).h;
+			tempNode->pParent = (*iter).pParent;
+			tempNode->point = (*iter).point;
+			tempNode->f = (*iter).f;
+			tempNode->g = (*iter).g;
+			tempNode->h = (*iter).h;
+		}
 	}
-	// 목적지가 아니라 경로 노드라면
-	else
-	{
-		node = new Node(Index_Y, Index_X, val, uniqueName++);
-		node->g = parentNode->g + add_g; // g값을 증가시켜줌
-
-		// 목적지의 인덱스를 가져와서 
-		auto inds = getGoalIndex();
-		int goalRowInd = get<0>(inds);
-		int goalColInd = get<1>(inds);
-		
-		// 휴리스틱 측정치를 적용한다.
-		//int h = getH(abs(goalRowInd - Index_Y) + abs(goalColInd - Index_X);
-		node->h = getH(inds, make_tuple(Index_Y, Index_X));
-		node->f = node->g + node->h;
-		node->pParent = parentNode;
-	}
+	return tempNode;
 }
 
-Node* getChildNodes(int childIndex_Y, int childIndex_X, Node* parentNode, int add_g)
+// 현재 확인하려는 좌표가 경로 정점 중에 하나인지 확인하는 함수.
+bool findPathNodeInMap(int i, int j, ASNode* Node = nullptr)
 {
-	
-	// 오픈리스트에서 하위 노드를 가져온다.
-	auto it_open = find_if(openList.begin(), openList.end(), [&](Node* node)
-		{
-			return node->y == childIndex_Y && node->x == childIndex_X;
-		});
-	// 클로즈리스트에서 하위 노드를 가져온다.
-	auto it_close = find_if(closeList.begin(), closeList.end(), [&](Node* node)
-		{
-			return node->y == childIndex_Y && node->x == childIndex_X;
-		});
-
-	// 오픈리스트에서 하위 노드를 찾았다면
-	if (it_open != openList.end())
+	if (Node == nullptr) return false;
+	ASNode* tempNode = Node->pParent;
+	while (nullptr != tempNode)
 	{
-		//exist
-		if ((*it_open)->g < parentNode->g + add_g)
-		{
-			(*it_open)->g = parentNode->g + add_g;
-			parentNode->pParent = (*it_open);
-			(*it_open)->f = (*it_open)->g + (*it_open)->h;
+		if (i == tempNode->point.Y && j == tempNode->point.X)
+			return true;
 
-			//cout << "[parenting openlist]";
-			//DebugPrintElement(*it_open, parentNode);
-		}
-		return *it_open;
+		tempNode = tempNode->pParent;
 	}
-	// closeList에서 하위 노드를 찾았다면
-	else if (it_close != closeList.end())
-	{
-		//exist
-		if ((*it_close)->g < parentNode->g + add_g)
-		{
-			(*it_close)->g = parentNode->g + add_g;
-			parentNode->pParent = (*it_close);
-			(*it_close)->f = (*it_close)->g + (*it_close)->h;
-			/*	cout << "[parenting closelist]";
-				DebugPrintElement(*it_close, parentNode);*/
-		}
-		return *it_close;
-	}
-	// 하위 노드를 찾지 못했다면
-	else
-	{
-		// 새로운 노드를 생성한다.
-		Node* newNode = createNodeByIndex(childIndex_Y, childIndex_X, parentNode, add_g);
 
-		// 노드가 성공적으로 생성되었다면 
-		if (newNode != nullptr)
-		{
-			// openList에 추가한다.
-			//cout << "[push] to openlist:" << newNode->row << "," << newNode->col << endl;
-			openList.push_back(newNode);
-		}
-		// 추가로 생성한 노드를 반환한다.
-		return newNode;
-	}
-	
-	return nullptr;
-	
+	return false;
 }
 
-
-void showMap()
+// 시작점, 도착점, 경로등을 출력하는 함수.
+void showMap(Point start = Point(-1, -1), Point end = Point(-1, -1), ASNode* node = nullptr)
 {
-	cout << "\n=======================================" << endl;
+	for (int i = 0; i < MAP_SIZE + 1; i++)
+	{
+		cout << "==";
+	}
+	cout << endl;
 	for (int i = 0; i < MAP_SIZE; i++)
 	{
+		cout << "|";
 		for (int j = 0; j < MAP_SIZE; j++)
 		{
-			cout << map[i][j] << " ";
+			// 해당 좌표가 시작점일때
+			if (i == start.Y && j == start.X)
+				cout << "ST";
+			// 해당 좌표가 도착점일때
+			else if (i == end.Y && j == end.X)
+				cout << "GL";
+			// 해당 좌표가 최단경로일때
+			else if (node != nullptr && findPathNodeInMap(i, j, node))
+			{
+				cout << "★";
+			}
+			// 해당 좌표가 어떤 특징도 없을때 이동 가능 여부를 표기한다.
+			else
+			{
+				if (map[i][j])
+					cout << "■";
+				else
+					cout << "□";
+			}
 		}
-		cout << endl;
+		cout << "|" << endl;
 	}
-	cout << "=======================================" << endl;
+	for (int i = 0; i < MAP_SIZE + 1; i++)
+	{
+		cout << "==";
+	}
+	cout << endl;
 }
 
-void Astar()
+// A* : 최단경로 탐색 알고리즘
+void astar(Point start, Point end, MODE mode)
 {
-	// openList에 정점이 없다면 함수 중지. 길찾기 실패
-	if (openList.size() == 0)
-	{
-		cout << " 최단 경로 찾기를 실패했습니다." << endl;
-		return;
-	}
+	list<ASNode> openList;
+	list<ASNode> closeList;
 
-	// 빈 노드를 하나 생성.
-	Node* openNode = nullptr;
+	openList.push_back(ASNode(nullptr, start, 0, getH(start, end)));
 
-	int smallest_f = 10000;
-	// 오픈 리스트를 탐지하여 f값이 가장 작은 노드를 현재 노드로 만든다.
-	// f값은 출발점부터 현재노드의 거리와 현재 노드에서 목표점까지의 거리의 합이다.
-	for (auto& op : openList)
+	while (true)
 	{
-		if (op->f < smallest_f)
+		// 모든 노드를 다닐 때까지 값을 찾지 못했음.
+		if (openList.size() == 0)
 		{
-			smallest_f = op->f;
-			openNode = op;
+			cout << "경로를 찾을 수 없습니다." << endl;
+			return;
 		}
-	}
 
-	if (openNode != nullptr)
-	{
-		// 만약에 이번 노드가 목적지라면 경로를 보여주고 맵에 표시한다.
-		if (openNode->nodeName == 'G')
+		// openList 중 가장 경로에서 가까운 노드를 가져옴
+		ASNode* openNode = nodeWithLowestF(openList);
+
+		// 다음으로 선택된 Node가 목적지 Node일 때 (결과 도출 완료)
+		if (openNode->point == end)
 		{
-			cout <<  " 최단 경로 : " << endl;
-			while (openNode != nullptr)
+			ASNode* showMapNode = openNode;
+			cout << "경로 탐색 완료. 결과 출력" << endl;
+			while (nullptr != openNode)
 			{
-				cout << "(" << openNode->y << "," << openNode->x << ")";
-
-				int indexY = openNode->y;
-				int indexX = openNode->x;
-				if(!(map[indexY][indexX] == 'S' || map[indexY][indexX] == 'G'))
-					map[indexY][indexX] = '*';
-
+				if (nullptr == openNode->pParent)
+					cout << "(" << openNode->point.X << "," << openNode->point.Y << ")";
+				else
+					cout << "(" << openNode->point.X << "," << openNode->point.Y << ")->";
 				openNode = openNode->pParent;
-				if (openNode != nullptr)
-					cout << "<==";
 			}
+			cout << endl;
 
-			showMap();
+			showMap(start, end, showMapNode);
+
+			return;
 		}
-		else
+
+		for (int i = 0; i < dir.size(); i++)
 		{
-			// 현재 정점에서 다음 정점을 탐색한다.
-			int IndexY = openNode->y;
-			int IndexX = openNode->x;
-
-			Node* childNode;
-
-			for (int i = 0; i < dir.size(); i++)
+			// 현재 정점에서 탐색되는 정점이 맵의 범위에서 벗어나는지 확인
+			if (openNode->point.Y + dir[i].first >= 0 &&
+				openNode->point.Y + dir[i].first < MAP_SIZE &&
+				openNode->point.X + dir[i].second < MAP_SIZE &&
+				openNode->point.X + dir[i].second >= 0)
 			{
-				if (openNode->y + dir[i].first >= 0 &&
-					openNode->y + dir[i].first < MAP_SIZE &&
-					openNode->x + dir[i].second < MAP_SIZE &&
-					openNode->x + dir[i].second >= 0)
+				int childY = openNode->point.Y + dir[i].first;
+				int childX = openNode->point.X + dir[i].second;
+
+				if (!map[childY][childX]) continue;
+
+				// 닫힌 좌표일 경우
+				if (getNodeFromList(closeList, Point(childX, childY)) != closeList.end())
+					continue;
+
+				// 기본 4방향
+				if (mode == MODE::Normal4 && i >= dir.size() / 2) continue;
+
+				Point wall1 = Point(childX, openNode->point.Y);
+				Point wall2 = Point(openNode->point.X, childY);
+
+				// 인접 정점에 하나는 길이 열려있어야 함.
+				if (mode == MODE::Half8 && !(map[wall1.Y][wall1.X] || map[wall2.Y][wall2.X])) continue;
+
+				// 인접 정점에 길이 두개 다 열려있어야 함.
+				if (mode == MODE::Both8 && !(map[wall1.Y][wall1.X] && map[wall2.Y][wall2.X])) continue;
+
+
+
+
+				// 처음 접근하는 좌표거나 열린 좌표일 경우
+				int newG = dir[i].first != 0 && dir[i].second != 0 ? 14 : 10;
+				int newH = getH(Point(childX, childY), end);
+				int newF = newG + newH;
+
+				list<ASNode>::iterator iter = getNodeFromList(openList, Point(childX, childY));
+
+				if (iter == openList.end() || (*iter).f > newF)
 				{
-					int childIndexY = openNode->y + dir[i].first;
-					int childIndexX = openNode->x + dir[i].second;
-					int add_g = dir[i].first != 0 && dir[i].second != 0 ? 14 : 10;
-					childNode = getChildNodes(childIndexY, childIndexX, openNode, add_g);
+					ASNode newASNode(openNode, Point(childX, childY), newG, newH);
+					openList.push_back(newASNode);
 				}
 			}
+		}
 
-			// 현재 노드를 오픈리스트에서 제거하고 
-			openList.remove_if([&](Node* node)
-				{
-					return node->y == IndexY && node->x == IndexX;
-				});
-
-			// 클로즈리스트에 추가하여 검사를 마쳤다는 것을 확인한다.
-			closeList.push_back(openNode);
-
-			// 다음 길찾기를 수행한다.
-			Astar();
+		// 현재 정점을 닫힌 좌표에 집어 넣는다.
+		closeList.push_back(*openNode);
+		// 현재 정점을 열린 좌표에서 제외한다.
+		for (list<ASNode>::iterator iter = openList.begin(); iter != openList.end(); iter++)
+		{
+			if ((*iter).point == openNode->point)
+			{
+				openList.erase(iter);
+				break;
+			}
 		}
 	}
 }
+
 
 int main()
 {
-	showMap();
-	tuple<int, int> start_index = getStartIndex();
-	int startY = get<0>(start_index);
-	int startX = get<1>(start_index);
+	Point start = Point(0, 0);
+	Point goal = Point(6, 6);
 
-	Node* startNode = new Node(startY, startX, 'S', 'S');
+	showMap(start, goal);
+	astar(start, goal, MODE::Both8);
 
-	openList.push_back(startNode);
-
-	Astar();
+	return 0;
 }
