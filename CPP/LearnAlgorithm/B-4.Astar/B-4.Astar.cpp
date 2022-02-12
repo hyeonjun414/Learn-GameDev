@@ -259,9 +259,11 @@ void astar(Point start, Point end, MODE mode)
 				openNode->point.X + dir[i].second < MAP_SIZE &&
 				openNode->point.X + dir[i].second >= 0)
 			{
+				// 인접 정점의 좌표를 구해준다.
 				int childY = openNode->point.Y + dir[i].first;
 				int childX = openNode->point.X + dir[i].second;
 
+				// 해당 좌표가 
 				if (!map[childY][childX]) continue;
 
 				// 닫힌 좌표일 경우
