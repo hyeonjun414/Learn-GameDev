@@ -2,14 +2,17 @@
 //
 
 #include "framework.h"
-#include "Client.h"
+#include "WinAPI2dImitation.h"
 
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
-HINSTANCE hInst;                                // 현재 인스턴스입니다.
+HINSTANCE   hInst;                                // 현재 인스턴스입니다.
+HWND        hWnd;
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+
+
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -31,7 +34,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, // 실행된 프로세스의 시
     // 전역 문자열을 초기화합니다.
     // 리소스 뷰의 String Table에서 ID값으로 String을 가져오는 함수
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING); // 프로그램 타이틀을 불러옴.
-    LoadStringW(hInstance, IDC_CLIENT, szWindowClass, MAX_LOADSTRING); // 프로그램 클래스를 불러옴.
+    LoadStringW(hInstance, IDC_WINAPI2DIMITATION, szWindowClass, MAX_LOADSTRING); // 프로그램 클래스를 불러옴.
 
     // 윈도우 정보 등록
     MyRegisterClass(hInstance);
@@ -42,20 +45,47 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, // 실행된 프로세스의 시
         return FALSE;
     }
 
-    // 단축키 정보를 불러온다.
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
+    CCore::getInst()->Init();
 
-    MSG msg;
+    // 단축키 정보를 불러온다.
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINAPI2DIMITATION));
+
 
     // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    // 메세지 큐에서 메세지가 확인될 때까지 대기
+    // 메세지 큐에 msg.message == WM_QUIT 인 경우 false를 반환
+
+    // GetMessage : 메시지 큐에 메시지가 없다면 대기, 메시지가 들어온다면 true 반환
+    // PeekMessage : 메시지 큐에 메시지가 없다면 false 반환, 메시지가 있다면 true 반환
+
+    // 게임 루프
+    // 이전 GetMessage의 대기 상태 유지에서
+    // 현재 PeekMessage의 메시지가 없는 상황(대부분)에서 게임 상황 처리
+    MSG msg;
+    while (TRUE)
     {
-        // 단축키에 해당하는 메세지인지 확인
-        //if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        //{
-        TranslateMessage(&msg);     // 기본 메시지를 번역
-        DispatchMessage(&msg);      // 메시지가 온 대로 처리 -> WndProc 실행
-    //}
+        // PM_REMOVE를 통해 확인한 메세지를 제거한다.
+        // 메세지에 대한 처리는 보통 금방 처리되기에 게임 연산에 지장이 갈 정도는 아니다.
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+        {
+            if (WM_QUIT == msg.message)
+                break;
+
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg)) // 단축키에 대한 처리
+            {
+                TranslateMessage(&msg);     // 키보드 입력메세지 처리를 담당
+                DispatchMessage(&msg);      // WndProc에서 전달된 메세지를 실제 윈도우에 전달
+            }
+        }
+        // 메세지가 없을 때 게임에 대한 처리를 진행한다.
+        else
+        {
+            // 게임 로직
+            // 게임 업데이트와 게임 렌더
+            CCore::getInst()->update();
+            CCore::getInst()->render();
+        }
+
     }
 
     return (int)msg.wParam;
@@ -80,7 +110,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = hInstance;                     // 인스턴스 핸들러 지정
-    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDC_CLIENT));      // 아이콘 지정
+    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDC_WINAPI2DIMITATION));      // 아이콘 지정
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);                      // 커서 지정
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);                    // 바탕화면 지정
     wcex.lpszMenuName = nullptr;                                        // 메뉴 옵션 지정
@@ -106,7 +136,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
     // 윈도우 창에 대한 주소값
-    HWND hWnd = CreateWindowW(szWindowClass,         // 클래스 이름
+    hWnd = CreateWindowW(szWindowClass,         // 클래스 이름
         szTitle,               // 윈도우 이름
         WINSTYLE,              // 윈도우 스타일
         WINSTARTX,             // 윈도우 시작 X
@@ -179,64 +209,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
-    case WM_LBUTTONDOWN:
-        //// 클릭한 위치에 원을 출력하는 기능 -> 클릭된 좌표를 가져옴
-        //g_mousePos.x = LOWORD(lParam);
-        //g_mousePos.y = HIWORD(lParam);
-        //InvalidateRect(hWnd, NULL, false); // 화면을 다시 그리는 함수
-        isClick = true;
-        g_mouseStartPos.x = LOWORD(lParam);
-        g_mouseStartPos.y = HIWORD(lParam);
-        break;
-    case WM_LBUTTONUP:
-        isClick = false;
-        break;
-    case WM_MOUSEMOVE:
-        // 클릭한 위치에 원을 출력하는 기능 -> 클릭된 좌표를 가져옴
-        g_mouseEndPos.x = LOWORD(lParam);
-        g_mouseEndPos.y = HIWORD(lParam);
-        g_mousePos.x = LOWORD(lParam);
-        g_mousePos.y = HIWORD(lParam);
-        InvalidateRect(hWnd, NULL, false); // 화면을 다시 그리는 함수
         break;
     case WM_KEYDOWN:
-        switch (wParam)
-        {
-            // 기타 다른 키들은 VK로 등록되어 있다 ex. VK_UP ...
-        case VK_LEFT:
-        case 'A':
-            g_keyPos.x -= 10;
-            break;
-        case VK_RIGHT:
-        case 'D':
-            g_keyPos.x += 10;
-            break;
-        case VK_UP:
-        case 'W':
-            g_keyPos.y -= 10;
-            break;
-        case VK_DOWN:
-        case 'S':
-            g_keyPos.y += 10;
-            break;
-        default:
-            break;
-        }
-        InvalidateRect(hWnd, NULL, false); // 화면을 다시 그리는 함수
         break;
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
-        // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-
-        if (isClick)
-            Rectangle(hdc, g_mouseStartPos.x, g_mouseStartPos.y, g_mouseEndPos.x, g_mouseEndPos.y);
-
-        //if(g_mousePos.x != 0 && g_mousePos.y != 0)
-        //    Ellipse(hdc, g_mousePos.x - 50, g_mousePos.y - 50, g_mousePos.x + 50, g_mousePos.y + 50);
-        if (g_keyPos.x != 0 && g_keyPos.y != 0)
-            Rectangle(hdc, g_keyPos.x - 100, g_keyPos.y - 100, g_keyPos.x + 100, g_keyPos.y + 100);
         EndPaint(hWnd, &ps);
     }
     break;

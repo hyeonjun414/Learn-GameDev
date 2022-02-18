@@ -20,7 +20,13 @@
 #include <map>
 #include <chrono>
 
-// 1280x720
+// 사용자 정의 클래스
+#include "Logger.h"
+#include "CSingleton.h"
+#include "CCore.h"
+#include "struct.h"
+#include "CTimeManager.h"
+#include "CGameObject.h"
 
 
 
@@ -30,3 +36,11 @@
 #define WINSIZEX 1280         
 #define WINSIZEY 720
 #define WINSTYLE WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+
+
+// 매크로
+#define DT CTimeManager::getInst()->GetDT();
+
+// 전역 변수 -> 외부 클래스에 변수가 존재함을 알림.
+extern HINSTANCE	hInst;
+extern HWND			hWnd;
