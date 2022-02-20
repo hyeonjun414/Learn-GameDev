@@ -57,6 +57,9 @@
     <ClInclude Include="CGameObject.h">
       <Filter>03.GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="CBullet.h">
+      <Filter>03.GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinAPI2dImitation.cpp">
@@ -69,6 +72,9 @@
       <Filter>02.Util</Filter>
     </ClCompile>
     <ClCompile Include="CGameObject.cpp">
+      <Filter>03.GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CBullet.cpp">
       <Filter>03.GameObject</Filter>
     </ClCompile>
   </ItemGroup>

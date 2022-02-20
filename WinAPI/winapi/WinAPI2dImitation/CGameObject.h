@@ -1,19 +1,26 @@
 #pragma once
 class CGameObject
 {
-private:
-	fPoint m_fptPos;
-	fPoint m_fptScale;
+protected:
+	bool	m_bIsActive;
+	fPoint	m_fptPos;
+	fPoint	m_fptScale;
+	fPoint	m_fSpeed;
 
 public:
 	CGameObject();
 	CGameObject(fPoint pos, fPoint scale);
 	~CGameObject();
 
-	void SetPos(fPoint pos);
-	void SetScale(fPoint scale);
+	void	SetActive(bool active);
+	void	SetPos(fPoint pos);
+	void	SetScale(fPoint scale);
 
-	fPoint GetPos();
-	fPoint GetScale();
+	bool	GetActive();
+	fPoint	GetPos();
+	fPoint	GetScale();
+
+	void update();
+	void render(HDC hdc);
 };
 
