@@ -23,15 +23,18 @@
 using namespace std; // --> 같은 이름을 지닌 기능과 겹치지 않도록 유의
 
 // 사용자 정의 클래스
+
 #include "Logger.h"
-#include "CSingleton.h"
-#include "CCore.h"
 #include "enumClass.h"
 #include "struct.h"
+
+#include "CSingleton.h"
+#include "CCore.h"
+
 #include "CTimeManager.h"
 #include "CKeyManager.h"
-#include "CGameObject.h"
-#include "CScene.h"
+#include "CSceneManager.h"
+#include "CGameManager.h"
 
 
 // 정의
