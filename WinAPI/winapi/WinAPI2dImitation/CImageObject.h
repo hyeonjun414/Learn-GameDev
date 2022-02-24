@@ -1,17 +1,23 @@
 #pragma once
 #include "CGameObject.h"
-class CTextObject :
+
+class CTexture;
+
+class CImageObject :
     public CGameObject
 {
-    wstring     m_strText;
+private :
+    CTexture* m_pTex;
 
 public:
-    CTextObject();
-    CTextObject(wstring strText, OBJ_TYPE objGroup);
-    ~CTextObject();
+    CImageObject();
+    CImageObject(OBJ_TYPE objGroup);
+    ~CImageObject();
+
 
     virtual void Init();
     virtual void Update();
     virtual void Render(HDC hDC);
+    
 };
 

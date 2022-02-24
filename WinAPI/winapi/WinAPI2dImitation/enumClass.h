@@ -8,8 +8,10 @@ enum class OBJ_TYPE
 	PLAYER,
 	MONSTER,
 	BULLET,
+	MISSILE,
 
 	TEXT,
+	IMAGE,
 
 	SIZE,
 };

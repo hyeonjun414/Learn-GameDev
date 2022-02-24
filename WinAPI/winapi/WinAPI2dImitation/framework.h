@@ -14,16 +14,19 @@
 #include <memory.h>
 #include <tchar.h>
 
+
+#pragma comment(lib, "Msimg32.lib")
+
 // STL
 #include <vector>
 #include <list>
 #include <map>
 #include <chrono>
 #include <random>
+#include <assert.h>
 using namespace std; // --> 같은 이름을 지닌 기능과 겹치지 않도록 유의
 
 // 사용자 정의 클래스
-
 #include "Logger.h"
 #include "enumClass.h"
 #include "struct.h"
@@ -34,7 +37,7 @@ using namespace std; // --> 같은 이름을 지닌 기능과 겹치지 않도�
 #include "CTimeManager.h"
 #include "CKeyManager.h"
 #include "CSceneManager.h"
-#include "CGameManager.h"
+#include "CPathManager.h"
 
 
 // 정의
@@ -43,9 +46,13 @@ using namespace std; // --> 같은 이름을 지닌 기능과 겹치지 않도�
 #define WINSIZEX 1280         
 #define WINSIZEY 720
 #define WINSTYLE WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+#define PI	3.141592f
+#define DEG(value) value * PI / 180
+#define GRAVITY 9.8f;
 
 // 매크로
-#define DT CTimeManager::GetInst()->GetDT();
+#define SINGLE(manager) manager::GetInst()
+#define DT CTimeManager::GetInst()->GetDT()
 #define KEYCHECK(vk_Key) CKeyManager::GetInst()->GetKeyState(vk_Key)
 
 // 외부 변수 참조 -> 외부 클래스에 변수가 존재함을 알림.
