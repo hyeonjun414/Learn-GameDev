@@ -28,6 +28,10 @@ public:
 	virtual void	FinalUpdate() final;	// 컴포넌트의 실행 유무는 오브젝트의 최상위 클래스에서 판단한다.
 	virtual void	ComponentRender(HDC _hDC) final; // 컴포넌트가 있는 경우 하위 클래스에서 구현된 Render에서 호출한다.
 
+	virtual void	OnCollision(CCollider* _pOther) {};
+	virtual void	OnCollisionEnter(CCollider* _pOther) {};
+	virtual void	OnCollisionExit(CCollider* _pOther) {};
+
 	void			SetActive(bool _active)		{ m_bIsActive = _active; }
 	void			SetGravity(bool _active)	{ m_bIsGravity = _active; }
 	void			SetPos(Vec2 _pos)			{ m_vec2Pos = _pos; }

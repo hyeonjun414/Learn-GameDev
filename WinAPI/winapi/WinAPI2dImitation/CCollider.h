@@ -16,18 +16,30 @@ private:
 	Vec2	m_vScale;		// 충돌체의 크기 정보
 
 	UINT	m_uiID;			// 충돌체의 고유한 ID
+	UINT	m_uiColCount;	// 충돌체의 충돌 횟수
 
 public:
 	CCollider();
+	CCollider(const CCollider& _origin);
 	~CCollider();
 
-	void FinalUpdate();
-	void Render(HDC _hDC);
+	void	FinalUpdate();
+	void	Render(HDC _hDC);
 
-	void SetOffsetPos(Vec2 _vPos)	{ m_vOffsetPos = _vPos; }
-	void SetScale(Vec2 _vScale)		{ m_vScale = _vScale; }
+	void	SetOffsetPos(Vec2 _vPos)	{ m_vOffsetPos = _vPos; }
+	void	SetScale(Vec2 _vScale)		{ m_vScale = _vScale; }
 
-	Vec2 GetOffsetPos() { return m_vOffsetPos; }
-	Vec2 GetScale()		{ return m_vScale; }
+	Vec2	GetOffsetPos()	{ return m_vOffsetPos; }
+	Vec2	GetScale()		{ return m_vScale; }
+	UINT	GetID()			{ return m_uiID; }
+	Vec2	GetFinalPos() { return m_vFinalPos; }
+
+	// 대입 연산자가 작동하지 않도록 만들어준다.
+	CCollider& operator = (const CCollider& _origin) = delete;
+
+	void OnCollision(CCollider* _pOther); // 충돌 중인 경우 호출되는 함수
+	void OnCollisionEnter(CCollider* _pOther); // 충돌이 시작될때 호출되는 함수
+	void OnCollisionExit(CCollider* _pOther); // 출돌이 끝날때 호출되는 함수
+	
 };
 
