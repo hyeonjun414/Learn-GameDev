@@ -13,7 +13,7 @@ CPlayer::CPlayer(OBJ_TYPE _objGroup) :
 	CGameObject(_objGroup)
 {
 	// 텍스쳐 불러오기
-	m_pTex = SINGLE(CResourceManager)->LoadTexture(L"PlayerTex", L"texture\\monster01.bmp");
+	m_pTex = SINGLE(CResourceManager)->LoadTexture(L"PlayerTex", L"texture\\player.bmp");
 
 	// Collider 만들기
 	CreateCollider();
@@ -32,25 +32,28 @@ void CPlayer::Init()
 
 void CPlayer::Update()
 {
-	if (KEYCHECK(KEY::LEFT) == KEY_STATE::HOLD)
+	if (m_bIsActive)
 	{
-		// 왼쪽
-		m_vec2Pos.x -= 300 * DT;
-	}
-	if (KEYCHECK(KEY::RIGHT) == KEY_STATE::HOLD)
-	{
-		// 오른쪽
-		m_vec2Pos.x += 300 * DT;
-	}
-	if (KEYCHECK(KEY::UP) == KEY_STATE::HOLD)
-	{
-		// 위쪽
-		m_vec2Pos.y -= 300 * DT;
-	}
-	if (KEYCHECK(KEY::DOWN) == KEY_STATE::HOLD)
-	{
-		// 아래쪽
-		m_vec2Pos.y += 300 * DT;
+		if (KEYCHECK(KEY::LEFT) == KEY_STATE::HOLD)
+		{
+			// 왼쪽
+			m_vec2Pos.x -= 300 * DT;
+		}
+		if (KEYCHECK(KEY::RIGHT) == KEY_STATE::HOLD)
+		{
+			// 오른쪽
+			m_vec2Pos.x += 300 * DT;
+		}
+		if (KEYCHECK(KEY::UP) == KEY_STATE::HOLD)
+		{
+			// 위쪽
+			m_vec2Pos.y -= 300 * DT;
+		}
+		if (KEYCHECK(KEY::DOWN) == KEY_STATE::HOLD)
+		{
+			// 아래쪽
+			m_vec2Pos.y += 300 * DT;
+		}
 	}
 
 	if (KEYCHECK(KEY::SPACE) == KEY_STATE::TAP)
@@ -78,35 +81,30 @@ void CPlayer::Render(HDC _hDC)
 
 void CPlayer::CreateMissile()
 {
-	CScene* pCurScene = CSceneManager::GetInst()->GetCurScene();
 
-	CMissile* pMissile = new CMissile(OBJ_TYPE::MISSILE, DEG(0));
+	CMissile* pMissile = new CMissile(OBJ_TYPE::MISSILE, DEG(10));
+	pMissile->SetName(L"Missile_Player");
 	pMissile->SetPos(Vec2(m_vec2Pos.x + m_vec2Scale.x/2+ pMissile->GetScale().x, m_vec2Pos.y));
 	pMissile->SetGravity(true);
-	pCurScene->AddObject(pMissile);
+	CreateObject(pMissile);
 
-	pMissile = new CMissile(OBJ_TYPE::MISSILE, DEG(45));
-	pMissile->SetPos(Vec2(m_vec2Pos.x + m_vec2Scale.x/2 + pMissile->GetScale().x, m_vec2Pos.y));
-	pMissile->SetGravity(true);
-	pCurScene->AddObject(pMissile);
+	CMissile* pMissile1 = pMissile->Clone();
+	pMissile1->SetDir(DEG(20));
+	CreateObject(pMissile1);
 
-	pMissile = new CMissile(OBJ_TYPE::MISSILE, DEG(-45));
-	pMissile->SetPos(Vec2(m_vec2Pos.x + m_vec2Scale.x/2 + pMissile->GetScale().x, m_vec2Pos.y));
-	pMissile->SetGravity(true);
-	pCurScene->AddObject(pMissile);
+	CMissile* pMissile2 = pMissile->Clone();
+	pMissile2->SetDir(DEG(30));
+	CreateObject(pMissile2);
 
-	pMissile = new CMissile(OBJ_TYPE::MISSILE, DEG(15));
-	pMissile->SetPos(Vec2(m_vec2Pos.x + m_vec2Scale.x/2 + pMissile->GetScale().x, m_vec2Pos.y));
-	pMissile->SetGravity(true);
-	pCurScene->AddObject(pMissile);
+	CMissile* pMissile3 = pMissile->Clone();
+	pMissile3->SetDir(DEG(40));
+	CreateObject(pMissile3);
 
-	pMissile = new CMissile(OBJ_TYPE::MISSILE, DEG(60));
-	pMissile->SetPos(Vec2(m_vec2Pos.x + m_vec2Scale.x/2 + pMissile->GetScale().x, m_vec2Pos.y));
-	pMissile->SetGravity(true);
-	pCurScene->AddObject(pMissile);
+	CMissile* pMissile4 = pMissile->Clone();
+	pMissile4->SetDir(DEG(50));
+	CreateObject(pMissile4);
 
-	pMissile = new CMissile(OBJ_TYPE::MISSILE, DEG(90));
-	pMissile->SetPos(Vec2(m_vec2Pos.x + m_vec2Scale.x/2 + pMissile->GetScale().x, m_vec2Pos.y));
-	pMissile->SetGravity(true);
-	pCurScene->AddObject(pMissile);
+	CMissile* pMissile5 = pMissile->Clone();
+	pMissile5->SetDir(DEG(60));
+	CreateObject(pMissile5);
 }

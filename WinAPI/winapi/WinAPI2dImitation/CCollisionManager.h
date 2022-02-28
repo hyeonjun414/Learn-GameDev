@@ -17,12 +17,13 @@ class CCollisionManager
 	SINGLETON(CCollisionManager);
 private:
 	map<ULONGLONG, bool> m_mapColInfo; // 충돌체 간의 이전 프레임 충돌 정보
-	bool	m_arrCheck[(UINT)OBJ_TYPE::SIZE][(UINT)OBJ_TYPE::SIZE];
+	UINT	m_arrCheck[(UINT)OBJ_TYPE::SIZE];
 
 public:
 	void	Init();
 	void	Update();
 	void	CheckGroup(OBJ_TYPE _eLeft, OBJ_TYPE _eRight);
+	void	UnCheckGroup(OBJ_TYPE _eLeft, OBJ_TYPE _eRight);
 	void	Reset();
 
 private:

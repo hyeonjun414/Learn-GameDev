@@ -12,8 +12,9 @@ private :
 public:
     CImageObject();
     CImageObject(OBJ_TYPE _objGroup);
+    CImageObject(OBJ_TYPE _objGroup, wstring _strPath);
     virtual ~CImageObject();
-
+    CLONE(CImageObject)
 
     virtual void    Init();
     virtual void    Update();

@@ -19,14 +19,16 @@ void CCollisionManager::Init()
 
 void CCollisionManager::Update()
 {
-	for (int i = 0; i < (UINT)OBJ_TYPE::SIZE; i++)
+	// 행을 그룹 개수만큼 검사한다.
+	for (UINT iRow = 0; iRow < (UINT)OBJ_TYPE::SIZE; iRow++)
 	{
-		for (int j = 0; j < (UINT)OBJ_TYPE::SIZE; j++)
+		// 열을 그룹 개수만큼 검사한다.
+		for (UINT iCol = iRow;  iCol < (UINT)OBJ_TYPE::SIZE;  iCol++)
 		{
-			if (m_arrCheck[i][j] || m_arrCheck[j][i])
+			if (m_arrCheck[iRow] & (1 << iCol))
 			{
 				// 현재 씬에서 충돌처리를 수행할 오브젝트를 가져온다.
-				CollisionGroupUpdate((OBJ_TYPE)i, (OBJ_TYPE)j);
+				CollisionGroupUpdate((OBJ_TYPE)iRow, (OBJ_TYPE)iCol);
 			}
 		}
 	}
@@ -34,20 +36,34 @@ void CCollisionManager::Update()
 
 void CCollisionManager::CheckGroup(OBJ_TYPE _eLeft, OBJ_TYPE _eRight)
 {
-	m_arrCheck[(UINT)_eLeft][(UINT)_eRight] = true;
-	m_arrCheck[(UINT)_eRight][(UINT)_eLeft] = true;
+	UINT iRow = (UINT)_eLeft;
+	UINT iCol = (UINT)_eRight;
+
+	if (iCol < iRow)
+	{
+		iRow = (UINT)_eRight;
+		iCol = (UINT)_eLeft;
+	}
+	
+	m_arrCheck[iRow] |= (1 << iCol);
+}
+
+void CCollisionManager::UnCheckGroup(OBJ_TYPE _eLeft, OBJ_TYPE _eRight)
+{
+	UINT iRow = (UINT)_eLeft;
+	UINT iCol = (UINT)_eRight;
+
+	if (iCol < iRow)
+	{
+		iRow = (UINT)_eRight;
+		iCol = (UINT)_eLeft;
+	}
+	m_arrCheck[iRow] &= ~(1 << iCol);
 }
 
 void CCollisionManager::Reset()
 {
-	// 배열을 전부 0으로 초기화
-	for (int i = 0; i < (UINT)OBJ_TYPE::SIZE; i++)
-	{
-		for (int j = 0; j < (UINT)OBJ_TYPE::SIZE; j++)
-		{
-			m_arrCheck[i][j] = false;
-		}
-	}
+	memset(m_arrCheck, 0, sizeof(UINT) * (UINT)OBJ_TYPE::SIZE);
 }
 
 void CCollisionManager::CollisionGroupUpdate(OBJ_TYPE _eLeft, OBJ_TYPE _eRight)
@@ -97,6 +113,8 @@ void CCollisionManager::CollisionGroupUpdate(OBJ_TYPE _eLeft, OBJ_TYPE _eRight)
 
 
 
+
+
 			// 두 오브젝트가 충돌했는지 확인,
 			// 키 상태와 마찬가지로 이전 프레임의 충돌정보가 필요하다.
 			if (IsCollision(pLeftCol,pRightCol))
@@ -105,15 +123,33 @@ void CCollisionManager::CollisionGroupUpdate(OBJ_TYPE _eLeft, OBJ_TYPE _eRight)
 				if (iter->second)
 				{
 					// 이전 프레임에도 충돌이 일어났었다면.
+
+					if (!vecLeft[i]->GetActive() || !vecRight[j]->GetActive())
+					{
+						// 둘 중 하나가 삭제 예정이라면, 충돌 해제시켜준다.
+						pLeftCol->OnCollisionExit(pRightCol);
+						pRightCol->OnCollisionExit(pLeftCol);
+						iter->second = false;
+					}
+					else
+					{
+						pLeftCol->OnCollision(pRightCol);
+						pRightCol->OnCollision(pLeftCol);
+					}
+
 					pLeftCol->OnCollision(pRightCol);
 					pRightCol->OnCollision(pLeftCol);
 				}
 				else
 				{
 					// 이번 충돌이 처음 일어난 충돌이라면
-					pLeftCol->OnCollisionEnter(pRightCol);
-					pRightCol->OnCollisionEnter(pLeftCol);
-					iter->second = true;
+					// 두 오브젝트 모두 삭제 예정이 아니라면 실행
+					if (vecLeft[i]->GetActive() && vecRight[j]->GetActive())
+					{
+						pLeftCol->OnCollisionEnter(pRightCol);
+						pRightCol->OnCollisionEnter(pLeftCol);
+						iter->second = true;
+					}
 				}
 			}
 			else
@@ -141,7 +177,7 @@ bool CCollisionManager::IsCollision(CCollider* _pLeftCol, CCollider* _pRightCol)
 	Vec2 vRightScale = _pRightCol->GetScale();
 
 	if (abs(vRightPos.x - vLeftPos.x) < (vLeftScale.x + vRightScale.x) / 2.f &&
-		abs(vRightPos.x - vLeftPos.x) < (vLeftScale.x + vRightScale.x) / 2.f)
+		abs(vRightPos.y - vLeftPos.y) < (vLeftScale.y + vRightScale.y) / 2.f)
 	{
 		return true;
 	}

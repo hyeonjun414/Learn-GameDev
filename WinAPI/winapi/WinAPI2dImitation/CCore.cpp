@@ -69,8 +69,12 @@ void CCore::Render()
 	swprintf_s(strFPS, L"%5d", CTimeManager::GetInst()->GetFPS());
 	TextOutW(m_hMemDC, WINSIZEX - 60, 10, strFPS, 5);
 
+
 	// m_hMemDC에 모아 그린 정보를 m_hDC로 한번에 다시 그림.
 	BitBlt(m_hDC, 0, 0, WINSIZEX, WINSIZEY, m_hMemDC, 0, 0, SRCCOPY);
+
+	// 이벤트 지연처리를 렌더를 마친후에 진행한다.
+ 	SINGLE(CEventManager)->Update();
 }
 
 void CCore::Init()
