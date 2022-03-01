@@ -21,21 +21,16 @@ void CInGameScene::Update()
 {
 	CScene::Update();
 
-	CGameManager::GetInst()->SetPlayer(m_vecObjectList[(int)OBJ_TYPE::PLAYER][0]);
-	CGameObject* player = CGameManager::GetInst()->GetPlayer();
+	CGameManager::GetInst()->SetPlayer((CPlayer*)m_vecObjectList[(int)OBJ_TYPE::PLAYER][0]);
+	CPlayer* player = CGameManager::GetInst()->GetPlayer();
 
-	if (player->GetActive() == false && KEYCHECK(KEY::R) == KEY_STATE::TAP)
+	if (player->GetAlive() == false && KEYCHECK(KEY::R) == KEY_STATE::TAP)
 	{
-		player->SetActive(true);
-		player->SetPos(Vec2(WINSIZEX / 2, WINSIZEY / 2));
-		player->SetScale(Vec2(20, 20));
-		CTimeManager::GetInst()->SetPlayTime(0);
-		m_iStageTime = 5;
-		m_vecObjectList[(int)OBJ_TYPE::MISSILE].clear();
+		GameReset();
 		return;
 	}
 
-	if (player->GetActive())
+	if (player->GetAlive())
 	{
 
 		// 1초마다 돌아오면 플레이어를 겨냥하는 총알을 생성
@@ -68,6 +63,7 @@ void CInGameScene::Update()
 				CMissile* bullet = new CMissile(OBJ_TYPE::MISSILE, dirVec);
 				bullet->SetPos(Vec2(x, y));
 				bullet->SetGravity(false);
+				bullet->SetName(L"Missile");
 				CreateObject(bullet);
 			}
 		}
@@ -78,8 +74,8 @@ void CInGameScene::Render(HDC hDC)
 {
 	CScene::Render(hDC);
 
-	CGameObject* player = m_vecObjectList[(int)OBJ_TYPE::PLAYER][0];
-	if (player->GetActive())
+	CPlayer* player = (CPlayer*)m_vecObjectList[(int)OBJ_TYPE::PLAYER][0];
+	if (player->GetAlive())
 	{
 		// 시간 출력
 		WCHAR strSEC[7];
@@ -102,16 +98,16 @@ void CInGameScene::Enter()
 {
 	m_iStageTime = 5;
 
-	CGameObject* obj = new CPlayer(OBJ_TYPE::PLAYER);
+	CPlayer* obj = new CPlayer(OBJ_TYPE::PLAYER);
 	obj->SetPos(Vec2(WINSIZEX / 2, WINSIZEY / 2));
 	obj->SetScale(Vec2(20, 20));
+	SINGLE(CGameManager)->SetPlayer(obj);
 	AddObject(obj);
 
 
-	obj = new CImageObject(OBJ_TYPE::IMAGE, L"texture\\scene01_bg.bmp");
-	obj->SetPos(Vec2(WINSIZEX / 2, WINSIZEY / 2));
-
-	AddObject(obj);
+	CGameObject* ImageObj = new CImageObject(OBJ_TYPE::IMAGE, L"texture\\scene01_bg.bmp");
+	ImageObj->SetPos(Vec2(WINSIZEX / 2, WINSIZEY / 2));
+	AddObject(ImageObj);
 
 	// 어떤 오브젝트 그룹끼리 충돌할것인지 미리 정함
 	SINGLE(CCollisionManager)->CheckGroup(OBJ_TYPE::MISSILE, OBJ_TYPE::PLAYER);

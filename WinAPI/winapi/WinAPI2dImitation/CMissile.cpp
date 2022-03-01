@@ -61,13 +61,18 @@ void CMissile::Update()
 {
     if(m_bIsGravity) m_vVelocity.y -= 1;
 
-    m_vec2Pos.x += m_vDir.x * m_vSpeed.x * DT;
-    m_vec2Pos.y += m_vDir.y * m_vSpeed.y * DT - m_vVelocity.y * DT; 
-    // y좌표는 윈도우 좌표계로 반대로 간다.
+    if (SINGLE(CGameManager)->GetPlayer()->GetAlive())
+    {
+        m_vec2Pos.x += m_vDir.x * m_vSpeed.x * DT;
+        m_vec2Pos.y += m_vDir.y * m_vSpeed.y * DT - m_vVelocity.y * DT;
+        // y좌표는 윈도우 좌표계로 반대로 간다.
 
-    if (m_vec2Pos.x < -500 || m_vec2Pos.y < -500 ||
-        m_vec2Pos.x > WINSIZEX + 500 || m_vec2Pos.y > WINSIZEY + 500)
-        DeleteObject(this);
+        if (m_vec2Pos.x < -500 || m_vec2Pos.y < -500 ||
+            m_vec2Pos.x > WINSIZEX + 500 || m_vec2Pos.y > WINSIZEY + 500)
+            DeleteObject(this);
+    }
+
+
 }
 
 void CMissile::Render(HDC _hDC)
