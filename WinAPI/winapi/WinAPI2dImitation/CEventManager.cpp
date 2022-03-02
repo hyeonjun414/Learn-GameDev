@@ -2,7 +2,6 @@
 #include "CEventManager.h"
 #include "CScene.h"
 #include "CGameObject.h"
-#include "CPlayer.h"
 
 CEventManager::CEventManager()
 {}
@@ -26,6 +25,7 @@ void CEventManager::Excute(const tEvent& _event)
 		// 오브젝트를 Dead상태로 변경하고
 		// 삭제 예정 오브젝트들을 모아둔다.
 		CGameObject* pObj = (CGameObject*)_event.lParam;
+		if (!pObj->GetActive()) break;
 		pObj->SetActive(false);
 		m_vecDead.push_back(pObj);
 		break;
@@ -33,18 +33,6 @@ void CEventManager::Excute(const tEvent& _event)
 	case EVENT_TYPE::SCENE_CHANGE:
 	{
 		SINGLE(CSceneManager)->ChangeScene((SCENE_TYPE)_event.lParam);
-		break;
-	}
-	case EVENT_TYPE::PLAYER_DIE:
-	{
-		CPlayer* pPlayer = (CPlayer*)_event.lParam;
-		pPlayer->SetAlive(false);
-		break;
-	}
-	case EVENT_TYPE::RESET_GAME:
-	{
-		SINGLE(CSceneManager)->GetCurScene()->Exit();
-		SINGLE(CSceneManager)->GetCurScene()->Enter();
 		break;
 	}
 

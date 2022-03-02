@@ -19,7 +19,6 @@ private:
 public:
     CMissile();
     CMissile(OBJ_TYPE _objType, float _fTheta);
-    CMissile(OBJ_TYPE _objType, Vec2 _vDir);
     CMissile(const CMissile& _origin); // 복사 생성자
     ~CMissile();
     CLONE(CMissile)

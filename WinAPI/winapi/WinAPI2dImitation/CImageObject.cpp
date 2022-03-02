@@ -15,13 +15,6 @@ CImageObject::CImageObject(OBJ_TYPE _objGroup) :
 
 }
 
-CImageObject::CImageObject(OBJ_TYPE _objGroup, wstring _strPath) :
-	CGameObject(_objGroup),
-	m_pTex(nullptr)
-{
-	m_pTex = SINGLE(CResourceManager)->LoadTexture(L"Scene01_bg", _strPath);
-}
-
 CImageObject::~CImageObject()
 {
 }
@@ -36,6 +29,7 @@ void CImageObject::Update()
 
 void CImageObject::Render(HDC _hDC)
 {
+	
 	int iWidth = (int)m_pTex->Width();
 	int iHeight = (int)m_pTex->Height();
 

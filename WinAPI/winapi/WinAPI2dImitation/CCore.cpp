@@ -41,16 +41,18 @@ void CCore::Update()
 {
 	// 게임의 정보를 갱신
 	
-	// 매니저 클래스 업데이트 ( 타임, 키, 장면, 충돌 )
+	// 매니저 클래스 업데이트 ( 타임, 키, 장면, 충돌, 카메라 )
 	SINGLE(CTimeManager)->Update();
 	SINGLE(CKeyManager)->Update();
 	SINGLE(CSceneManager)->Update();
 	SINGLE(CCollisionManager)->Update();
+	SINGLE(CCamera)->Update();
 
-	if (KEYCHECK(KEY::CTRL) == KEY_STATE::TAP)
-	{
-		SINGLE(CGameManager)->SetDebugMode();
-	}
+	// 게임의 정보를 토대로 그려주는 작업
+	// FPS 출력
+	WCHAR strFPS[6];
+	swprintf_s(strFPS, L"%5d", CTimeManager::GetInst()->GetFPS());
+	TextOutW(m_hDC, WINSIZEX - 60, 10, strFPS, 5);
 }
 
 
@@ -67,7 +69,6 @@ void CCore::Render()
 	WCHAR strFPS[6];
 	swprintf_s(strFPS, L"%5d", CTimeManager::GetInst()->GetFPS());
 	TextOutW(m_hMemDC, WINSIZEX - 60, 10, strFPS, 5);
-
 
 	// m_hMemDC에 모아 그린 정보를 m_hDC로 한번에 다시 그림.
 	BitBlt(m_hDC, 0, 0, WINSIZEX, WINSIZEY, m_hMemDC, 0, 0, SRCCOPY);
@@ -89,8 +90,7 @@ void CCore::Init()
 	SINGLE(CPathManager)->Init();
 	SINGLE(CSceneManager)->Init();
 	SINGLE(CCollisionManager)->Init();
-
-	SINGLE(CGameManager)->Init();
+	SINGLE(CCamera)->Init();
 
 	// 코어의 변수에 DC 할당
 	m_hDC = GetDC(hWnd);

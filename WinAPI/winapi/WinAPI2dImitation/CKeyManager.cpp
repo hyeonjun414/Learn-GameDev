@@ -11,11 +11,14 @@ int g_arrVK[(int)KEY::SIZE] =
 	'Q','W','E','R','T','Y','U','I','O','P',
 	'A','S','D','F','G','Z','X','C','V','B',
 	VK_MENU,	//	ALT,
-	VK_LSHIFT,	//	LSHIFT,
-	VK_CONTROL,	//	CTRL,
+	VK_CONTROL,	//	LSHIFT,
+	VK_LSHIFT,	//	CTRL,
 	VK_SPACE,	//	SPACE,
 	VK_RETURN,	//	ENTER,
 	VK_ESCAPE,	//	ESC,
+
+	VK_LBUTTON, //	LBTN,
+	VK_RBUTTON, //  RBTN,
 
 	//	LAST
 };
@@ -104,6 +107,19 @@ void CKeyManager::Update()
 
 			m_vecKey[i].bPrevPush = false;
 
+		}
+
+		POINT ptPos = {};
+		GetCursorPos(&ptPos);
+		ScreenToClient(hWnd, &ptPos);
+		if (ptPos.x < 0 || ptPos.x > WINSIZEX ||
+			ptPos.y < 0 || ptPos.y > WINSIZEY)
+		{
+			m_vCurMousePos = Vec2(WINSIZEX / 2, WINSIZEY / 2);
+		}
+		else
+		{
+			m_vCurMousePos = Vec2(ptPos.x, ptPos.y);
 		}
 	}
 }
