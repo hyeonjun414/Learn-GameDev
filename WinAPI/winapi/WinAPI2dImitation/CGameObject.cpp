@@ -51,6 +51,7 @@ CGameObject::~CGameObject()
 void CGameObject::FinalUpdate()
 {
 	m_vRenderPos = SINGLE(CCameraManager)->GetRenderPos(m_vec2Pos);
+
 	if (nullptr != m_pCollider)
 		m_pCollider->FinalUpdate();
 }
