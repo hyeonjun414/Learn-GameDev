@@ -156,7 +156,6 @@
     <ClInclude Include="CCameraManager.h" />
     <ClInclude Include="CCollider.h" />
     <ClInclude Include="CCollisionManager.h" />
-    <ClInclude Include="CCollObject.h" />
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CEventManager.h" />
     <ClInclude Include="CGameObject.h" />
@@ -171,6 +170,7 @@
     <ClInclude Include="CResourceManager.h" />
     <ClInclude Include="CScene.h" />
     <ClInclude Include="CSceneManager.h" />
+    <ClInclude Include="CTile.h" />
     <ClInclude Include="CToolScene.h" />
     <ClInclude Include="function.h" />
     <ClInclude Include="SelectGDI.h" />
@@ -193,7 +193,6 @@
     <ClCompile Include="CCameraManager.cpp" />
     <ClCompile Include="CCollider.cpp" />
     <ClCompile Include="CCollisionManager.cpp" />
-    <ClCompile Include="CCollObject.cpp" />
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CEventManager.cpp" />
     <ClCompile Include="CGameObject.cpp" />
@@ -211,6 +210,7 @@
     <ClCompile Include="CStartScene.cpp" />
     <ClCompile Include="CTextObject.cpp" />
     <ClCompile Include="CTexture.cpp" />
+    <ClCompile Include="CTile.cpp" />
     <ClCompile Include="CTimeManager.cpp" />
     <ClCompile Include="CToolScene.cpp" />
     <ClCompile Include="SelectGDI.cpp" />

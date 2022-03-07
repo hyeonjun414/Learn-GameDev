@@ -8,13 +8,14 @@ enum class OBJ_TYPE
 
 	IMAGE,
 	TEXT,
+	TILE,
 	
 	PLAYER,
 	MONSTER,
 	BULLET_PLAYER,
 	BULLET_ENEMY,
 	MISSILE,
-	Floor,
+
 
 
 	SIZE,
