@@ -26,6 +26,10 @@ CButtonUI* CButtonUI::Clone()
 
 void CButtonUI::MouseOn()
 {
+	if (IsMouseOn())
+	{
+
+	}
 	// 마우스가 올라갔을때 
 }
 
