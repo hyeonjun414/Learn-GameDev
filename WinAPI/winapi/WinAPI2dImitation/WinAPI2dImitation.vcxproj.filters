@@ -102,16 +102,10 @@
     <ClInclude Include="CImageObject.h">
       <Filter>03.GameObject\Object</Filter>
     </ClInclude>
-    <ClInclude Include="CMissile.h">
-      <Filter>03.GameObject\Object</Filter>
-    </ClInclude>
     <ClInclude Include="CMonster.h">
       <Filter>03.GameObject\Object</Filter>
     </ClInclude>
     <ClInclude Include="CPlayer.h">
-      <Filter>03.GameObject\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="CTextObject.h">
       <Filter>03.GameObject\Object</Filter>
     </ClInclude>
     <ClInclude Include="CUI.h">
@@ -218,16 +212,10 @@
     <ClCompile Include="CImageObject.cpp">
       <Filter>03.GameObject\Object</Filter>
     </ClCompile>
-    <ClCompile Include="CMissile.cpp">
-      <Filter>03.GameObject\Object</Filter>
-    </ClCompile>
     <ClCompile Include="CMonster.cpp">
       <Filter>03.GameObject\Object</Filter>
     </ClCompile>
     <ClCompile Include="CPlayer.cpp">
-      <Filter>03.GameObject\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="CTextObject.cpp">
       <Filter>03.GameObject\Object</Filter>
     </ClCompile>
     <ClCompile Include="CUI.cpp">
