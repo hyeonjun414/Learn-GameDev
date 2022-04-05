@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace Astar
 {
+    static class Constants
+    {
+        public const int INF = 99999;
+    }
     internal class Program
     {
         public const int MAP_SIZE = 7;
@@ -17,7 +21,6 @@ namespace Astar
             {1, 1, 0, 1, 1, 1, 1 },
             {1, 1, 1, 1, 1, 0, 1 }
         };
-
 
         static void Main(string[] args)
         {

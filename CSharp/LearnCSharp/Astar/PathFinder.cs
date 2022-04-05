@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define MAX_SIZE 
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,9 +45,9 @@ namespace Astar
             isActive = true;
             parent = null;
             point = null;
-            g = PathFinder.INF;
-            h = PathFinder.INF;
-            f = PathFinder.INF;
+            g = Constants.INF;
+            h = Constants.INF;
+            f = Constants.INF;
         }
         public ASNode(ASNode _parent, Point _point, int _g, int _h)
         {
@@ -61,9 +63,7 @@ namespace Astar
     public class PathFinder
     {
 
-
         // 맵 사이즈, 최대 값 정의
-        public const int INF = 99999;
         public int MAP_SIZE;
         int[,] map;
         public List<(int y, int x)> dir = new List<(int y, int x)>();
@@ -72,7 +72,9 @@ namespace Astar
         {
             AddDir();
         }
+
         ~PathFinder(){}
+
         public void ExcutePathFind(Point _start, Point _end, int[,] _map, int _mapSize, MODE _mode)
         {
             MAP_SIZE = _mapSize;
@@ -121,8 +123,8 @@ namespace Astar
         public ASNode NodeWithLowestF(LinkedList<ASNode> _list)
         {
             ASNode Node = null;
-            int minF = INF;
-            int minH = INF;
+            int minF = Constants.INF;
+            int minH = Constants.INF;
             foreach (ASNode node in _list)
             {
                 if ((node.f < minF || (node.f == minF && node.h < minH)) &&
