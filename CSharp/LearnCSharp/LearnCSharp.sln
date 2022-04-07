@@ -5,15 +5,23 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Astar", "Astar\Astar.csproj", "{48826DC7-D31C-4E39-A2C7-AC5EFAECE724}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearnCSharp", "LearnCSharp\LearnCSharp.csproj", "{B848534E-AE7B-4BE2-8F6A-4EC25DE5BE9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearnCSharp", "LearnCSharp\LearnCSharp.csproj", "{B848534E-AE7B-4BE2-8F6A-4EC25DE5BE9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interface_ex_Figure", "Interface_ex_Figure\Interface_ex_Figure.csproj", "{5222B73A-C0AB-4C45-80A9-F0499334E137}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interface_ex_Figure", "Interface_ex_Figure\Interface_ex_Figure.csproj", "{5222B73A-C0AB-4C45-80A9-F0499334E137}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interface_ex_SpyGame", "Interface_ex_SpyGame\Interface_ex_SpyGame.csproj", "{727A0AC4-0D2F-47C1-A117-5F46B5BDEA61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interface_ex_SpyGame", "Interface_ex_SpyGame\Interface_ex_SpyGame.csproj", "{727A0AC4-0D2F-47C1-A117-5F46B5BDEA61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Event", "Event\Event.csproj", "{6DE785AA-942D-483E-A5AC-0F7B395D0EDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Event", "Event\Event.csproj", "{6DE785AA-942D-483E-A5AC-0F7B395D0EDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delegate", "Delegate\Delegate.csproj", "{3D4E5BFA-F043-4441-A793-320EE7D1B8BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Delegate", "Delegate\Delegate.csproj", "{3D4E5BFA-F043-4441-A793-320EE7D1B8BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Property", "Property\Property.csproj", "{9849A5CA-B20F-4038-B319-98B2120F6910}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Indexer", "Indexer\Indexer.csproj", "{C34AF1C9-B630-4D99-BD64-BA78E68AFB8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anonymous_Method", "Anonymous_Method\Anonymous_Method.csproj", "{B088EE04-7397-4EB7-A8D1-48C9AC8402E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionHandling", "ExceptionHandling\ExceptionHandling.csproj", "{A24DC91C-7DE0-4A34-839B-B08F2B77FCDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +53,22 @@ Global
 		{3D4E5BFA-F043-4441-A793-320EE7D1B8BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D4E5BFA-F043-4441-A793-320EE7D1B8BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D4E5BFA-F043-4441-A793-320EE7D1B8BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9849A5CA-B20F-4038-B319-98B2120F6910}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9849A5CA-B20F-4038-B319-98B2120F6910}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9849A5CA-B20F-4038-B319-98B2120F6910}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9849A5CA-B20F-4038-B319-98B2120F6910}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C34AF1C9-B630-4D99-BD64-BA78E68AFB8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C34AF1C9-B630-4D99-BD64-BA78E68AFB8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C34AF1C9-B630-4D99-BD64-BA78E68AFB8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C34AF1C9-B630-4D99-BD64-BA78E68AFB8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B088EE04-7397-4EB7-A8D1-48C9AC8402E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B088EE04-7397-4EB7-A8D1-48C9AC8402E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B088EE04-7397-4EB7-A8D1-48C9AC8402E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B088EE04-7397-4EB7-A8D1-48C9AC8402E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A24DC91C-7DE0-4A34-839B-B08F2B77FCDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A24DC91C-7DE0-4A34-839B-B08F2B77FCDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A24DC91C-7DE0-4A34-839B-B08F2B77FCDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A24DC91C-7DE0-4A34-839B-B08F2B77FCDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
