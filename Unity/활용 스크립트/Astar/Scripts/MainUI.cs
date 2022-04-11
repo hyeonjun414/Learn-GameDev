@@ -7,17 +7,20 @@ public class MainUI : MonoBehaviour
 {
     public Board board;
     public Dropdown nodeTypeDropdown;
+    public Text text_StartPos;
+    public Text text_EndPos;
     // Start is called before the first frame update
     void Start()
     {
-        for(int i = 0; i<(int)NodeColor.Size; i++)
+        for(int i = 0; i<(int)NodeType.Size; i++)
         {
-            NodeColor nc = (NodeColor)i;
+            NodeType nc = (NodeType)i;
             Dropdown.OptionData data = new Dropdown.OptionData();
             data.text = nc.ToString();
             nodeTypeDropdown.options.Add(data);
         }
-        
+
+
     }
 
     // Update is called once per frame
@@ -31,7 +34,8 @@ public class MainUI : MonoBehaviour
         int value = nodeTypeDropdown.value;
         if(0 != value)
         {
-            board.color = (NodeColor)(nodeTypeDropdown.value - 1);
+            board.nodeType = (NodeType)(nodeTypeDropdown.value - 1);
         }
     }
+
 }

@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 5518493869021242753}
   - component: {fileID: 5518493869021242754}
   - component: {fileID: 5518493869021242755}
-  - component: {fileID: 5518493869021242752}
   - component: {fileID: -790437040774994481}
+  - component: {fileID: 5836169648327846253}
   m_Layer: 0
-  m_Name: ASNode
+  m_Name: ASCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,25 +81,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &5518493869021242752
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5518493869021242765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b8f9d8c0c167584e95efce008086f26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nodeColor: {fileID: 0}
-  isActive: 0
-  prevNode: {fileID: 0}
-  g: 0
-  h: 0
-  f: 0
-  rend: {fileID: 0}
 --- !u!65 &-790437040774994481
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -113,3 +94,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5836169648327846253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5518493869021242765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b20b8986472c8e4788ee4e64d118d18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_eNodeType: 0
+  m_cRend: {fileID: 0}
+  m_PosX: 0
+  m_PosY: 0
