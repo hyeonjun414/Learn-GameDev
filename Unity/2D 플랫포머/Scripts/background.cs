@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class background : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
+    public GameObject target;
     // Update is called once per frame
     void Update()
     {
-        
+        transform.position = new Vector3(target.transform.position.x, 0, 0);
     }
 }

@@ -8,11 +8,11 @@ public class PlayerMover : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     private SpriteRenderer sr;
+    private CapsuleCollider2D coll;
 
     public float moveSpeed = 5.0f;
     public float jumpPower = 5.0f;
 
-    bool IsGround = true;
     bool IsCrouch
     {
         get
@@ -24,15 +24,15 @@ public class PlayerMover : MonoBehaviour
             anim.SetBool("IsCrouch", value);
         }
     }
-    bool IsJump
+    bool IsGround
     {
         get
         {
-            return anim.GetBool("IsJump");
+            return anim.GetBool("IsGround");
         }
         set
         {
-            anim.SetBool("IsJump", value);
+            anim.SetBool("IsGround", value);
         }
     }
 
@@ -42,6 +42,7 @@ public class PlayerMover : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
+        coll = GetComponent<CapsuleCollider2D>();
     }
     private void Update()
     {
@@ -49,9 +50,21 @@ public class PlayerMover : MonoBehaviour
         Jump();
         Crouch();
     }
+    private void FixedUpdate()
+    {
+        Vector2 startVec = new Vector2(transform.position.x, transform.position.y);
+        RaycastHit2D hit = Physics2D.Raycast(startVec, Vector2.down, 1.5f, LayerMask.GetMask("Ground"));
+        Debug.DrawRay(startVec, Vector2.down*1.5f, new Color(0, 0, 1));
 
-
-
+        if(null != hit.collider)
+        {
+            IsGround = true;
+        }
+        else
+        {
+            IsGround = false;
+        }
+    }
     private void Move()
     {
         
@@ -74,20 +87,19 @@ public class PlayerMover : MonoBehaviour
     private void Jump()
     {
         bool jump = Input.GetButtonDown("Jump");
-        if (jump && !IsJump)
+        if (jump && IsGround)
         {
             rb.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
-            IsJump = true;
         }
 
-        if(IsJump)
+        if(!IsGround)
         {
             anim.SetInteger("AxisY", (int)rb.velocity.y);
         }
     }
     private void Crouch()
     {
-        if(IsGround && Input.GetAxisRaw("Vertical") < 0)
+        if(!IsGround && Input.GetAxisRaw("Vertical") < 0)
         {
             IsCrouch = true;
         }
@@ -96,21 +108,24 @@ public class PlayerMover : MonoBehaviour
             IsCrouch = false;
         }
     }
-   
+    private void Attack(IStampable monster)
+    {
+        rb.AddForce(Vector2.up * jumpPower/2, ForceMode2D.Impulse);
+        monster.Stamp();
+    }
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if(other.gameObject.tag == "Monster")
+        {
+            if(transform.position.y > other.transform.position.y)
+            {
+                IStampable monster = other.gameObject.GetComponent<IStampable>();
+                if(monster != null)
+                    Attack(monster);
+            }
+        }
+    }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.collider.tag == "Ground")
-        {
-            IsJump = false;
-        }
-    }
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.collider.tag == "Ground")
-        {
-            IsJump = true;
-        }
-    }
+
 
 }
