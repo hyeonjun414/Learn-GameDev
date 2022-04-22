@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IAttackable
 {
-    void Attack(int value);
+    void Attack();
 }
